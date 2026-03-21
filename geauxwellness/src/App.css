@@ -1,22 +1,23 @@
-/* Base layout */
+
 .page {
   width: 100%;
   min-height: 100vh;
   color: #1f2937;
-  overflow: hidden;
-  overflow-y: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
+
 
 .appContainer {
   padding-inline: 0px;
-  height: 1400px;
+  height: 1600px;
   background: #ede3ed;
 }
 .background {
   height: 100vh;
   background-image: url('./assets/happy.png'); /* Image in src folder */
-  background-size: cover; /* Scale to cover */
-  background-position: center; /* Center the image */
+  background-size: cover;
+  background-position: center; 
   background-repeat: no-repeat;
 }
 
@@ -176,6 +177,7 @@
 }
 
 /* Home page layout */
+
 .homePage {
   display: flex;
   flex-direction: row;
@@ -183,24 +185,65 @@
   align-items: flex-start;
   gap: 24px;
   padding: 20px;
-  overflow-x: hidden;
-  overflow-y: hidden;
 }
+
 
 .quizSection {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
-  width: min(460px, 100%);
-  min-height: 500px;
-  margin: 20px auto;
+  width: 460px;
+  min-height: 300px;
+  flex-shrink: 0;
   border-radius: 12px;
+  margin: 40px 30px 40px 40px;
   padding: 16px;
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.36);
   outline: 2px solid #111827;
   backdrop-filter: blur(4px);
   transition: transform 250ms ease;
+}
+
+
+.contentRow {
+  position: absolute;
+  flex-direction: column;
+  gap: 24px;
+  padding: 20px;
+  width: 100%;
+  overflow: visible;
+  top: 1011px;
+  right: -600px;
+}
+
+
+.missionstatement {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 860px;
+  min-height: 424px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.36);
+  outline: 2px solid #111827;
+  backdrop-filter: blur(4px);
+}
+
+.missionheader {
+  justify-content: left;
+  display: flex;
+  color: black;
+  font-size: 64px;
+  padding: 10px 18px 10px;
+  font-weight: bold;
+
+}
+
+.missionbody {
+
 }
 
 .navbarText:hover {
@@ -720,6 +763,14 @@
   margin-bottom: 20px;
 }
 
+.footer {
+  background: #9F84BD;
+  color: white;
+  text-align: center;
+  padding: 40px 20px;
+  margin-top: 0px;
+}
+
 @keyframes quiz-fade-slide-in {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
@@ -739,9 +790,7 @@
     flex-direction: column;
     align-items: center;
     gap: 16px;
-    padding: 8px;    
-    overflow-x: hidden;
-    overflow-y: hidden;
+    padding: 8px;
   }
 
   .quizSection {
