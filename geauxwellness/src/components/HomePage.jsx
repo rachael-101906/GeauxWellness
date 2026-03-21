@@ -16,7 +16,7 @@ export default function HomePage() {
             fullWidth
             label="Search"
           />
-          <button>Search</button>
+          <button style={{ backgroundColor: '#9F84BD', color: '#ffffff' }}>Enter your location</button>
         </div>
         <div className="map">
           <iframe className="mapframe"
@@ -28,15 +28,15 @@ export default function HomePage() {
       </div>
 
       <MoodBlockBody />
-      <div className="quizSection">
-        <QuizCard />
-      </div>
+      <div className="quizMissionRow">
+        <div className="quizSection">
+          <QuizCard />
+        </div>
 
-      <div className="contentRow">
-      <div className="missionstatement">
-        <h2 className="missionheader">Our Mission</h2>
-        <p className="missionbody">At GeauxWellness, our mission is to empower individuals to take control of their health and well-being through innovative technology and personalized insights. We are dedicated to providing a comprehensive platform that helps users track their wellness journey, gain valuable insights, and make informed decisions for a healthier lifestyle.</p>
-      </div>
+        <div className="missionstatement">
+          <h2 className="missionheader">Our Mission</h2>
+          <p className="missionbody">Geaux Wellness’ mission is to empower students with a clearer understanding of their emotional wellbeing and the world around them. By visualizing how moods shift across campus, we help you recognize patterns, build self-awareness, and feel more connected to your community. Every check-in builds a clearer picture of your wellbeing, so you can make choices that increase joy, reduce stress, and feel more connected. Your experiences shape meaningful insights, and NO ONE has to navigate their mental journey alone.</p>
+        </div>
       </div>
 
       <footer className="footer">   
