@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import { collection, getDocs } from "../../firebase.config";
+import { db } from "../../services/firebase";
 
 export default function Insights() {
   const [userStats, setUserStats] = useState({});
