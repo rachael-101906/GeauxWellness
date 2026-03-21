@@ -47,7 +47,7 @@ export function AuthProvider({ children }) {
         forgottenPassword,
       }}
     >
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   )
 }

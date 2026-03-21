@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { db } from "../firebase";
-import {
-  collection,
-  query,
-  where,
-  getDocs
-} from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs } from "../../firebase.config";
 
 export default function Insights() {
   const [userStats, setUserStats] = useState({});
@@ -16,9 +11,13 @@ export default function Insights() {
   const userId = localStorage.getItem("moodmapUser");
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
     loadInsights();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
 
   async function loadInsights() {
     setLoading(true);
@@ -61,12 +60,11 @@ export default function Insights() {
 
     const totalCommunity = allEntries.length;
     const communityPerc = {};
-    Object.keys(communityCounts).forEach((mood) => {
-      communityPerc[mood] = (
-        (communityCounts[mood] / totalCommunity) *
-        100
-      ).toFixed(1);
-    });
+    if (totalCommunity > 0) {
+      Object.keys(communityCounts).forEach((mood) => {
+        communityPerc[mood] = ((communityCounts[mood] / totalCommunity) * 100).toFixed(1);
+      });
+    }
 
     setUserStats(userMoodCounts);
     setCommunityStats(communityPerc);
@@ -86,7 +84,7 @@ export default function Insights() {
     <section className="Welcome">
       <h2>Insights</h2>
 
-      <div style={card}>
+      <div style={{ padding: 16, border: "1px solid #ddd", borderRadius: 8, marginBottom: 12 }}>
         <h3>Your Weekly Mood Summary</h3>
 
         {Object.keys(userStats).length === 0 ? (
@@ -94,19 +92,24 @@ export default function Insights() {
         ) : (
           Object.entries(userStats).map(([mood, count]) => (
             <p key={mood}>
-              You were <strong>{mood}</strong> {count} time
-              {count > 1 ? "s" : ""} this week.
+              You were <strong>{mood}</strong> {count} time{count > 1 ? "s" : ""} this week.
             </p>
           ))
         )}
       </div>
 
-              <div style={card}>
-                <h3>Campus Mood Trends</h3>
-                {/* Add community stats content here */}
-              </div>
-            </section>
-          );
-        }
-      }
-	    );
+      <div style={{ padding: 16, border: "1px solid #ddd", borderRadius: 8 }}>
+        <h3>Campus Mood Trends</h3>
+        {Object.keys(communityStats).length === 0 ? (
+          <p>No community mood data for the past week.</p>
+        ) : (
+          Object.entries(communityStats).map(([mood, perc]) => (
+            <p key={mood}>
+              <strong>{mood}</strong>: {perc}% of entries
+            </p>
+          ))
+        )}
+      </div>
+    </section>
+  );
+}
