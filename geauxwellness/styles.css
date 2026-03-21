@@ -1,0 +1,98 @@
+
+html {
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.MoodBlockBody {
+  padding: 0px;
+  margin: 0px;
+}
+
+.MoodBlock {
+  min-width: 100%;
+  min-height: 20vh;
+  overflow: visible;
+  display: flex;
+  flex-direction: row;
+  background: 
+    linear-gradient(
+    to bottom,
+    rgba(255,255,255,1) 0%,     /* solid white top */
+    rgba(255,255,255,0) 2.5%,    /* fades into gradient */
+    rgba(255,255,255,0) 97.5%,    /* gradient is normal in the middle */
+    rgba(255,255,255,1) 100%
+    ),
+
+    linear-gradient(to right,
+    #FFE066, #FF8C42, #FF5DA2,
+    #C81D25, purple, darkblue 
+  );
+  z-index: -1;
+}
+
+/* Only direct mood blocks, not nested divs */
+.MoodBlock > div {
+  align-items: center;
+  align-content: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 225px;
+  height: 275px;
+  background: rgba(255,255,255,0.1);
+  margin: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+  transition: transform 1s ease;
+  outline: 2px solid black;
+}
+
+.MoodBlock > div:hover {
+  transform: scale(1.15);
+}
+
+h3 {
+  color: white;
+  text-shadow: 1px 1px 2px black;
+  text-align: center;
+  font-size: 1.6em;
+  margin-bottom: 10px;
+}
+
+p {
+  color: white;
+  text-shadow: 1px 1px 2px black;
+  text-align: center;
+  margin: 0;
+}
+
+.Welcome {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.search-input {
+  padding: 10px;
+  width: 250px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.search-btn {
+  padding: 10px 15px;
+  margin-left: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.Logo {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 50px;
+  height: 50px; 
+}

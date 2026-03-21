@@ -1,4 +1,4 @@
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { addDoc, collection, onSnapshot, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
 import { db } from "./firebase";
@@ -36,6 +36,7 @@ export default function useMoods(userId) {
     return () => unsubscribe();
   }, [userId]);
 
+
   const loading = !!userId && resolvedUserId !== userId;
 
   return {
@@ -43,4 +44,22 @@ export default function useMoods(userId) {
     loading,
     error: userId ? error : null,
   };
+}
+
+export async function addMood({ moodData, userId }) {
+  const moods = collection(db, "moods");
+
+  try {
+    const docRef = await addDoc(moods, {
+      userId,
+      ...moodData,
+      note: moodData.note || "",
+      createdAt: new Date().toISOString(),
+    });
+
+    return docRef.id;
+  } catch (error) {
+    console.error("Error adding mood:", error);
+    throw error;
+  }
 }
