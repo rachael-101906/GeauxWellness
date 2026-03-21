@@ -70,7 +70,7 @@ export default function Quiz() {
     mood === "Sad" || mood === "Angry" || mood === "Anxious";
 
   return (
-    <Box maxWidth={400} mx="auto" mt={8} px={2}>
+    <Box width="100%" maxWidth={420} mx="auto" mt={0} px={2}>
 
       {/* Progress bar */}
       <LinearProgress variant="determinate" value={progress} sx={{ mb: 4 }} />

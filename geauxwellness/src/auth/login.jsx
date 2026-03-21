@@ -40,34 +40,40 @@ export default function Login() {
   }
  
   return (
-    <form onSubmit={handleSubmit} className="loginCard">
-      <h2>Login</h2>
+     <div className="background" >
+    <section className="loginSection">
+     
+      <form onSubmit={handleSubmit} className="loginCard">
+        <h2>Login</h2>
 
-      <label htmlFor="email">Email</label>
-      <input
-        id="email"
-        type="email"
-        value={email}
-        onChange={(event) => setEmail(event.target.value)}
-        placeholder="you@example.com"
-        required
-      />
+        <label htmlFor="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="you@example.com"
+          required
+        />
 
-      <label htmlFor="password">Password</label>
-      <input
-        id="password"
-        type="password"
-        value={password}
-        onChange={(event) => setPassword(event.target.value)}
-        placeholder="Enter your password"
-        required
-      />
+        <label htmlFor="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          placeholder="Enter your password"
+          required
+        />
 
-      <button type="submit">Sign In</button>
-      {errorMessage ? <p className="authError">{errorMessage}</p> : null}
-      <Link to="/register">
-        Don't have an account? Sign Up
-      </Link>
-    </form>
+        <button type="submit">Sign In</button>
+        {errorMessage ? <p className="authError">{errorMessage}</p> : null}
+        <Link to="/register">
+          Don't have an account? Sign Up
+        </Link>
+      </form>
+      
+    </section>
+    </div>
   )
 }

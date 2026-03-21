@@ -11,15 +11,26 @@ export default function Navbar() {
 
   return (
     <nav className="navbar" aria-label="Main navigation">
+      <Link to="/">
       <img src={logo} alt="GeauxWellness logo" className="navbarLogo" />
+      </Link>
       <div className="navigation">
-        <Link to="/tracker">Tracker</Link>
-        <Link to="/insights">Insights</Link>
-        <Link to="/profile">Profile</Link>
+
+        <Link to="/tracker" className="navbarText">
+          Tracker
+        </Link>
+        <Link to="/insights" className="navbarText">
+          Insights
+        </Link>
+        <Link to="/profile" className="navbarText">
+          Profile
+        </Link>
         {!loading && isAuthenticated ? (
-          <Link to="/logout">Logout</Link>
+          <Link to="/logout" className="navbarText">Logout</Link>
         ) : (
-          <Link to="/login">Login/Sign-Up</Link>
+          <Link to="/login" className="navbarText">
+            Login/Sign-Up
+          </Link>
         )}
       </div>
     </nav>

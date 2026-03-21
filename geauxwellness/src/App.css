@@ -9,6 +9,13 @@
   height: 1400px;
   background: #ede3ed;
 }
+.background {
+  height: 100vh;
+  background-image: url('./assets/happy.png'); /* Image in src folder */
+  background-size: cover; /* Scale to cover */
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat;
+}
 
 .Welcome {
   text-align: center;
@@ -116,21 +123,21 @@
 }
 
 .navbarLogo {
-  height: 100px;
-  width: 300px;
+  height: min(100px, 92vh);
+  width: min(300px, 92vw);
   object-fit: cover;
 }
 
 .navigation {
   display: flex;
   justify-content: flex-start;
-  width: min(720px, 75%);
+  width: min(820px, 75%);
   gap: 34px;
   padding-left: 10px;
   color: white;
 }
 
-.navigation a {
+.navbarText {
   color: white;
   justify-content: flex-start;
   padding: 20px;
@@ -142,7 +149,32 @@
   transition: transform 0.3s ease;
 }
 
-.navigation a:hover {
+.homePage {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 20px;
+}
+
+.quizSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  width: min(460px, 100%);
+  min-height: 500px;
+  margin: 20px auto;
+  border-radius: 12px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.16);
+  outline: 2px solid #111827;
+  backdrop-filter: blur(4px);
+  transition: transform 250ms ease;
+}
+
+.navbarText:hover {
   transform: scale(1.15);
   color: purple;
 }
@@ -270,7 +302,11 @@
 }
 
 .loginSection {
-  padding: 28px 16px 40px;
+  min-height: calc(100svh - 120px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
 }
 
 .loginCard {
@@ -304,7 +340,7 @@
   padding: 10px 12px;
   border: 0;
   border-radius: 8px;
-  background: #2563eb;
+  background: #9F84BD;
   color: #ffffff;
   font-weight: 600;
   cursor: pointer;
@@ -327,8 +363,24 @@
     padding-inline: 2px;
   }
 
+  .homePage {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 8px;
+  }
+
+  .quizSection {
+    width: min(600px, 96vw);
+    min-height: auto;
+    padding: 12px;
+  }
+
   .Welcome {
     margin-top: 6px;
+    margin-left: 0;
+    width: min(600px, 96vw);
+    height: auto;
   }
 
   .Logo {
@@ -346,6 +398,10 @@
 
   .navbarLogo {
     height: 34px;
+  }
+
+  .navbarText {
+    font-size: 18px;
   }
 
   .navBar {
