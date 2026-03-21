@@ -1,0 +1,308 @@
+import { useEffect, useRef, useState } from "react";
+import mapboxgl from "mapbox-gl";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../../services/firebase";
+import "mapbox-gl/dist/mapbox-gl.css";
+
+// ===== FIXED MAPBOX TOKEN ============
+mapboxgl.accessToken =
+  import.meta.env.VITE_MAPBOX_TOKEN ??
+  "pk.eyJ1IjoicmJlcmdlcm9uIiwiYSI6ImNtbjB1MWNmODBsdXQycXE0NnJ3eHczYWQifQ.hDACvJteDz9IarKHxlTuXw";
+
+// ===== LSU CAMPUS CENTER ============
+const LSU_CENTER = [-91.1801, 30.4133];
+
+// ===== Mood Colors ============
+const MOOD_COLORS = {
+  happy: "#FCE365",
+  anxious: "#4D4C4C",
+  sad: "#041375",
+  angry: "#520202",
+  hungry: "#FF7C02",
+  flirty: "#BD0243",
+};
+
+export default function MoodHeatmap() {
+  const mapContainer = useRef(null);
+  const map = useRef(null);
+
+  const [filter, setFilter] = useState("all");
+  const [moods, setMoods] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const HALF_LIFE_HOURS = 8;
+
+  // =====================================================================================
+  // 1. FETCH MOOD DATA FROM FIRESTORE
+  // =====================================================================================
+  useEffect(() => {
+    fetchMoods();
+  }, [filter]);
+
+  const fetchMoods = async () => {
+    setLoading(true);
+
+    try {
+      let q;
+      if (filter === "all") {
+        q = query(collection(db, "moods"), where("location", "!=", null));
+      } else {
+        q = query(
+          collection(db, "moods"),
+          where("mood", "==", filter),
+          where("location", "!=", null)
+        );
+      }
+
+      const snapshot = await getDocs(q);
+      const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setMoods(data);
+    } catch (err) {
+      console.error("Error fetching moods:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // =====================================================================================
+  // 2. INITIALIZE MAP ON LOAD
+  // =====================================================================================
+  useEffect(() => {
+    if (map.current) return;
+
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: "mapbox://styles/mapbox/dark-v11",
+      center: LSU_CENTER,
+      zoom: 15,
+    });
+
+    map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
+
+    map.current.on("load", () => {
+      // Create moods geojson source
+      map.current.addSource("moods", {
+        type: "geojson",
+        data: { type: "FeatureCollection", features: [] },
+      });
+
+      // =================================================================================
+      // Weather-style HEATMAP layer
+      // =================================================================================
+      map.current.addLayer({
+        id: "mood-heatmap",
+        type: "heatmap",
+        source: "moods",
+        maxzoom: 17,
+        paint: {
+          // Weight = decayed moodScore
+          "heatmap-weight": ["get", "moodScore"],
+
+          // Stronger heat at deeper zoom
+          "heatmap-intensity": [
+            "interpolate", ["linear"], ["zoom"],
+            13, 0.6,
+            15, 1.2,
+            17, 2.5,
+          ],
+
+          // WEATHER‑STYLE COLOR BLENDING
+          "heatmap-color": [
+            "interpolate",
+            ["linear"],
+            ["heatmap-density"],
+
+            0.00, "rgba(0,0,0,0)",
+            0.10, "rgba(120, 90, 150, 0.3)", // purple haze
+            0.25, "rgba(180, 120, 200, 0.6)", // lavender
+            0.45, "rgba(255, 140, 160, 0.75)", // pink-orange
+            0.70, "rgba(255, 180, 80, 0.9)",  // warm orange
+            1.00, "rgba(255, 220, 0, 1)"      // bright yellow hotspot
+          ],
+
+          // Soft edges for weather-like visuals
+          "heatmap-radius": [
+            "interpolate", ["linear"], ["zoom"],
+            13, 30,
+            15, 45,
+            17, 70
+          ],
+
+          "heatmap-opacity": [
+            "interpolate", ["linear"], ["zoom"],
+            15, 0.9,
+            17, 0
+          ],
+        },
+      });
+
+      // =================================================================================
+      // CIRCLE LAYER (at closer zooms)
+      // =================================================================================
+      map.current.addLayer({
+        id: "mood-circles",
+        type: "circle",
+        source: "moods",
+        minzoom: 15,
+        paint: {
+          "circle-radius": [
+            "interpolate", ["linear"], ["zoom"],
+            15, 4,
+            17, 14
+          ],
+          "circle-color": [
+            "match", ["get", "mood"],
+            "happy", "#FFD700",
+            "anxious", "#FF8C00",
+            "sad", "#4169E1",
+            "angry", "#FF4500",
+            "hungry", "#32CD32",
+            "flirty", "#FF69B4",
+            "#9f84bd"
+          ],
+          "circle-opacity": [
+            "interpolate", ["linear"], ["zoom"],
+            15, 0,
+            16, 0.9
+          ],
+          "circle-stroke-width": 1.5,
+          "circle-stroke-color": "rgba(255,255,255,0.3)"
+        }
+      });
+    });
+  }, []);
+
+  // =====================================================================================
+  // 3. UPDATE MAP DATA WITH TIME DECAY APPLIED
+  // =====================================================================================
+  useEffect(() => {
+    if (!map.current || !map.current.getSource("moods")) return;
+
+    const now = Date.now();
+
+    const features = moods.map((m) => {
+      const ageMs = now - (m.createdAt?.toMillis?.() || now);
+      const ageHours = ageMs / (1000 * 60 * 60);
+
+      const decay = Math.exp(-ageHours / HALF_LIFE_HOURS);
+      const baseScore = Number(m.moodScore) || 3;
+
+      const decayedScore = baseScore * decay;
+
+      return {
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [m.location.longitude, m.location.latitude],
+        },
+        properties: {
+          mood: m.mood,
+          moodScore: decayedScore,
+          journal: m.journal,
+          userId: m.userId,
+        },
+      };
+    });
+
+    map.current.getSource("moods").setData({
+      type: "FeatureCollection",
+      features,
+    });
+  }, [moods]);
+
+  // =====================================================================================
+  // EMOJI HELPER
+  // =====================================================================================
+  const getMoodEmoji = (mood) => {
+    const map = {
+      happy: "😊",
+      anxious: "😰",
+      sad: "😢",
+      angry: "😠",
+      hungry: "😋",
+      flirty: "😏",
+    };
+    return map[mood] ?? "🙂";
+  };
+
+  // =====================================================================================
+  // UI RENDER
+  // =====================================================================================
+  return (
+    <div style={{ fontFamily: "'DM Sans', sans-serif" }}>
+      
+      {/* FILTER BAR */}
+      <div style={{
+        display: "flex",
+        gap: 8,
+        flexWrap: "wrap",
+        marginBottom: 16,
+        padding: "0 4px",
+      }}>
+        <button
+          onClick={() => setFilter("all")}
+          style={{
+            padding: "7px 16px",
+            borderRadius: 20,
+            border: "1.5px solid",
+            borderColor: filter === "all" ? "#9f84bd" : "rgba(159,132,189,0.25)",
+            background: filter === "all" ? "rgba(159,132,189,0.2)" : "transparent",
+            color: filter === "all" ? "#ede3e9" : "#b8a8c8",
+            cursor: "pointer",
+            fontSize: 13,
+            fontWeight: 500,
+          }}
+        >
+          All moods
+        </button>
+
+        {Object.entries(MOOD_COLORS).map(([mood, color]) => (
+          <button
+            key={mood}
+            onClick={() => setFilter(mood)}
+            style={{
+              padding: "7px 16px",
+              borderRadius: 20,
+              border: "1.5px solid",
+              borderColor: filter === mood ? color : "rgba(255,255,255,0.1)",
+              background: filter === mood ? `${color}22` : "transparent",
+              color: filter === mood ? color : "#b8a8c8",
+              cursor: "pointer",
+              fontSize: 13,
+              fontWeight: 500,
+            }}
+          >
+            {getMoodEmoji(mood)} {mood.charAt(0).toUpperCase() + mood.slice(1)}
+          </button>
+        ))}
+      </div>
+
+      {/* MAP */}
+      <div style={{ position: "relative" }}>
+        <div
+          ref={mapContainer}
+          style={{
+            width: "100%",
+            height: 520,
+            borderRadius: 20,
+            overflow: "hidden",
+            border: "1px solid rgba(159,132,189,0.2)",
+          }}
+        />
+
+        {loading && (
+          <div style={{
+            position: "absolute", inset: 0,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            background: "rgba(42,31,53,0.7)",
+            borderRadius: 20,
+            color: "#ede3e9",
+            fontSize: 14,
+          }}>
+            Loading mood data...
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
