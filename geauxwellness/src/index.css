@@ -67,9 +67,14 @@ body {
   overflow-x: hidden;
 }
 
-h1,
+h1 {
+  font-family: 'Barbaro';
+  font-weight: 200;
+  color: var(--text-h);
+}
+
 h2 {
-  font-family: var(--heading);
+  font-family: 'Barbaro';
   font-weight: 500;
   color: var(--text-h);
 }

@@ -353,7 +353,6 @@
   font-weight: 600;
 }
 
-/* Mood block (lowercase naming) */
 .moodBlock {
   min-height: 28vh;
   display: grid;
