@@ -1,3 +1,4 @@
+
 import logo from '../assets/GeauxWellness.png'
 
 export default function Navbar() {
