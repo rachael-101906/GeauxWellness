@@ -17,7 +17,7 @@ export default function Logout() {
   return (
     <>
           <h2>Logout</h2>
-          <button type="submit" onClick={handleLogout}>
+          <button type="submit" onClick={handleLogout} className="loginCard">
             Log Out
           </button>
         </>

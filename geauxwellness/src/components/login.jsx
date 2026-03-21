@@ -39,7 +39,6 @@ export default function Login() {
     }
   }
  
-
   return (
     <form onSubmit={handleSubmit} className="loginCard">
       <h2>Login</h2>
