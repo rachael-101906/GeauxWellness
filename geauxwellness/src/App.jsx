@@ -1,121 +1,124 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+// App.pure.js
+import React, { useState } from 'react';
+import './App.css';
+import logo from './assets/hero.png';
+import TextField from '@mui/material/TextField';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+  return React.createElement(
+    'div',
+    null,
+    React.createElement(
+      'nav',
+      null,
+      React.createElement(
+        'div',
+        { className: 'navigation' },
+        React.createElement('a', { href: '#Tracker' }, 'Tracker'),
+        React.createElement('a', { href: '#Insights' }, 'Insights'),
+        React.createElement('a', { href: '#Profile' }, 'Profile'),
+        React.createElement('a', { href: '#Login/Sign-Up' }, 'Login/Sign-Up')
+      )
+    ),
 
-      <div className="ticks"></div>
+    React.createElement(
+      'div',
+      null,
+      React.createElement(
+        'div',
+        { className: 'Welcome' },
+        React.createElement('img', {
+          src: logo,
+          alt: 'GeauxWellness logo',
+          className: 'hero-logo',
+        }),
+        React.createElement('h2', null, 'Welcome to GeauxWellness'),
+        React.createElement(
+          'p',
+          null,
+          'Your journey to better health starts here.'
+        ),
+        React.createElement(TextField, {
+          id: 'outlined-basic',
+          variant: 'outlined',
+          fullWidth: true,
+          label: 'Search',
+        }),
+        React.createElement('button', null, 'Search')
+      )
+    ),
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+    React.createElement(
+      'div',
+      { className: 'MoodBlockBody' },
+      React.createElement(
+        'div',
+        { className: 'MoodBlock' },
+        React.createElement(
+          'div',
+          { className: 'Happy' },
+          React.createElement('h3', null, 'Happy'),
+          React.createElement(
+            'p',
+            null,
+            'Feeling great! Keep up the good work.'
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'Hungry' },
+          React.createElement('h3', null, 'Hungry'),
+          React.createElement(
+            'p',
+            null,
+            'Feeling hungry. Remember to eat regularly and stay hydrated.'
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'Flirty' },
+          React.createElement('h3', null, 'Flirty'),
+          React.createElement(
+            'p',
+            null,
+            'Feeling flirty. Embrace the moment and have fun!'
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'Angry' },
+          React.createElement('h3', null, 'Angry'),
+          React.createElement(
+            'p',
+            null,
+            'Feeling frustrated. Take a deep breath and try again.'
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'Anxious' },
+          React.createElement('h3', null, 'Anxious'),
+          React.createElement(
+            'p',
+            null,
+            'Feeling anxious. Take a deep breath and try again.'
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'Sad' },
+          React.createElement('h3', null, 'Sad'),
+          React.createElement(
+            'p',
+            null,
+            "Remember tough times don't last, tough people do."
+          )
+        )
+      )
+    )
+  );
 }
 
-export default App
+export default App;

@@ -161,6 +161,14 @@
   }
 }
 
+.hero-logo {
+  display: block;
+  width: 120px;
+  max-width: 90%;
+  margin-bottom: 16px;
+  object-fit: contain;
+}
+
 .ticks {
   position: relative;
   width: 100%;
