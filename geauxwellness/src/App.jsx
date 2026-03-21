@@ -1,12 +1,26 @@
 import './App.css'
 import { TextField } from "@mui/material";
+import { Navigate, Route, Routes } from 'react-router-dom'
 import Navbar from './components/Navbar'
+import Login from './components/login'
+import Register from './components/register'
+import Tracker from './components/tracker'
+import Insights from './components/insights'
+import Logout from './components/logout'
+import { useAuth } from './context/authContext'
 
-function App() {
+function Profile() {
   return (
-    <div className="appContainer">
-      <Navbar />
+    <section className="Welcome">
+      <h2>Profile</h2>
+      <p>Your profile page is ready for customization.</p>
+    </section>
+  )
+}
 
+function HomePage() {
+  return (
+    <>
       <div>
         <div className="Welcome">
           <h2>Welcome to GeauxWellness</h2>
@@ -55,6 +69,27 @@ function App() {
           </div>
         </div>
       </div>
+    </>
+  )
+}
+
+function App() {
+  const { user } = useAuth()
+
+  return (
+    <div className="appContainer">
+      <Navbar />
+
+      <Routes>
+        <Route path="/" element={user ? <HomePage /> : <Navigate to="/login" replace />} />
+        <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
+        <Route path="/register" element={user ? <Navigate to="/" replace /> : <Register />} />
+        <Route path="/tracker" element={user ? <Tracker /> : <Navigate to="/login" replace />} />
+        <Route path="/insights" element={user ? <Insights /> : <Navigate to="/login" replace />} />
+        <Route path="/profile" element={user ? <Profile /> : <Navigate to="/login" replace />} />
+        <Route path="/logout" element={user ? <Logout /> : <Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to={user ? '/' : '/login'} replace />} />
+      </Routes>
     </div>
   );
 }

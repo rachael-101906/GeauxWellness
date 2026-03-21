@@ -310,6 +310,18 @@
   cursor: pointer;
 }
 
+.authError {
+  margin: 4px 0 0;
+  color: #b91c1c;
+  font-size: 0.92rem;
+}
+
+.authSuccess {
+  margin: 4px 0 0;
+  color: #15803d;
+  font-size: 0.92rem;
+}
+
 @media (max-width: 768px) {
   .appContainer {
     padding-inline: 2px;
