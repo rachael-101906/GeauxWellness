@@ -2,7 +2,7 @@ import MoodHeatmap from "./index";
 
 export default function MapPage() {
   return (
-    <div style={{ padding: 32, background: "#2a1f35", minHeight: "100vh" }}>
+    <div style={{ padding: 22, background: "#2a1f35", minHeight: "100vh" }}>
       <h2 style={{ color: "#ede3e9", fontFamily: "Playfair Display, serif", marginBottom: 8 }}>
         LSU Mood Map
       </h2>
