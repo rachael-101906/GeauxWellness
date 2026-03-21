@@ -22,7 +22,7 @@ export default function Navbar() {
         <Link to="/insights" className="navbarText">
           Insights
         </Link>
-        <Link to="/profile" className="navbarText">
+        <Link to="/Profile" className="navbarText">
           Profile
         </Link>
         {!loading && isAuthenticated ? (
