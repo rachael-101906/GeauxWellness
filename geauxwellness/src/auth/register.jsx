@@ -46,6 +46,8 @@ export default function Register() {
   }
 
   return (
+    <div className="background" >
+    <section className="loginSection">
     <form onSubmit={handleSubmit} className="loginCard">
       <h2>Register</h2>
 
@@ -86,5 +88,7 @@ export default function Register() {
         Already have an account? Log In
       </Link>
     </form>
+    </section>
+    </div>
   )
 }

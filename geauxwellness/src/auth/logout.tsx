@@ -16,10 +16,16 @@ export default function Logout() {
 
   return (
     <>
+    <div className="background" >
+    <section className="loginSection">
+      <div className="loginCard">
           <h2>Logout</h2>
           <button type="submit" onClick={handleLogout} className="loginCard">
             Log Out
           </button>
+          </div>
+          </section>
+          </div>
         </>
   )
 }
