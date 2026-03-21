@@ -95,7 +95,7 @@ export default function Insights() {
     <section className="Welcome">
       <h2>Insights</h2>
 
-      <div style={card}>
+      <div style={{ padding: 16, border: "1px solid #ddd", borderRadius: 8, marginBottom: 12 }}>
         <h3>Your Weekly Mood Summary</h3>
 
         {Object.keys(userStats).length === 0 ? (
@@ -103,8 +103,7 @@ export default function Insights() {
         ) : (
           Object.entries(userStats).map(([mood, count]) => (
             <p key={mood}>
-              You were <strong>{mood}</strong> {count} time
-              {count > 1 ? "s" : ""} this week.
+              You were <strong>{mood}</strong> {count} time{count > 1 ? "s" : ""} this week.
             </p>
           ))
         )}
