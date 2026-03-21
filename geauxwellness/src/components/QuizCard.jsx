@@ -140,7 +140,12 @@ export default function Quiz() {
                       <a href="https://www.lsu.edu/shc/mental-health/index.php" target="_blank" rel="noopener noreferrer">
                         LSU Mental Health Resources →
                       </a>
+                      <p style={{ margin: "10px 0" }}> Or </p>
+                      <a href="https://ldh.la.gov/page/mental-health-services" target="_blank" rel="noopener noreferrer">
+                        LA Mental Health Resources →
+                      </a>
                     </p>
+                    <span style={{ fontSize: 20 }}>💜</span>
                   </div>
                 )}
 
