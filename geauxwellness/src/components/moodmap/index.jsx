@@ -4,7 +4,8 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../services/firebase";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-mapboxgl.accessToken = "pk.eyJ1IjoicmJlcmdlcm9uIiwiYSI6ImNtbjB1MWNmODBsdXQycXE0NnJ3eHczYWQifQ.hDACvJteDz9IarKHxlTuXw";
+const mapboxglAccessToken = process.env.MAP_BOX_GL_ACCESS_TOKEN;
+mapboxgl.accessToken = mapboxglAccessToken;
 
 const LSU_CENTER = [-91.1801, 30.4133];
 
