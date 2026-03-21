@@ -1,0 +1,13 @@
+body{
+font-family:Arial;
+text-align:center;
+}
+
+.controls{
+margin:20px;
+}
+
+#map{
+height:600px;
+width:100%;
+}

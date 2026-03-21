@@ -1,0 +1,71 @@
+import { db } from "./firebase.js";
+
+import {
+  collection,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+let map;
+let heatData = [];
+let heatmap;
+
+// Mood color map (optional if you want color-coded heat)
+const moodColors = {
+  happy: "#fce365",
+  sad: "#041375",
+  angry: "#520202",
+  anxious: "#4d4c4c",
+  hungry: "#ff7c02",
+  flirty: "#bd0243"
+};
+
+// All LSU campus centers
+const campuses = {
+  LSUBR: { lat: 30.4122893, lng: -91.1784655 },
+  LSUS: { lat: 32.4289863, lng: -93.7039541 },
+  LSUA: { lat: 31.177072, lng: -92.4150121 }
+};
+
+/**
+ * Initialize the map for the selected campus
+ */
+function initMap(campus = "LSUBR") {
+  const center = campuses[campus] || campuses.LSUBR;
+
+  map = new google.maps.Map(document.getElementById("map"), {
+    zoom: 15,
+    center
+  });
+
+  heatmap = new google.maps.visualization.HeatmapLayer({
+    data: heatData,
+    radius: 40
+  });
+
+  heatmap.setMap(map);
+
+  listenForMoodData();
+}
+
+/**
+ * Listen for Firestore mood points and update heatmap
+ */
+function listenForMoodData() {
+  onSnapshot(collection(db, "moods"), (snapshot) => {
+    heatData = [];
+
+    snapshot.forEach((doc) => {
+      const mood = doc.data();
+
+      heatData.push({
+        location: new google.maps.LatLng(mood.lat, mood.lng),
+        weight: mood.weight
+      });
+    });
+
+    heatmap.setData(heatData);
+  });
+}
+
+// Make initMap available to Google Maps script
+window.initMap = initMap;1111111111111.

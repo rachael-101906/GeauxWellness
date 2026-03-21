@@ -1,0 +1,68 @@
+import { initMap } from "./map.js";
+import { setupInput } from "./input.js";
+
+function createUI() {
+
+const app = document.getElementById("app");
+
+
+// Title
+const title = document.createElement("h1");
+title.textContent = "MoodMap – Campus Emotion Map";
+
+
+// Controls container
+const controls = document.createElement("div");
+controls.className = "controls";
+
+
+// Mood dropdown
+const moodSelect = document.createElement("select");
+moodSelect.id = "moodSelect";
+
+const moods = [
+["", "Select Emotion"],
+["happy", "Happy"],
+["sad", "Sad"],
+["angry", "Angry"],
+["anxious", "Anxious"],
+["hungry", "Hungry"],
+["flirty", "Flirty"]
+];
+
+moods.forEach(([value, label]) => {
+
+const option = document.createElement("option");
+option.value = value;
+option.textContent = label;
+
+moodSelect.appendChild(option);
+
+});
+
+
+// Submit button
+const button = document.createElement("button");
+button.id = "submitMood";
+button.textContent = "Add Emotion Hotspot";
+
+
+// Map container
+const mapDiv = document.createElement("div");
+mapDiv.id = "map";
+
+
+// Build layout
+controls.appendChild(moodSelect);
+controls.appendChild(button);
+
+app.appendChild(title);
+app.appendChild(controls);
+app.appendChild(mapDiv);
+
+}
+
+createUI();
+
+initMap();
+setupInput();
