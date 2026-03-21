@@ -33,6 +33,7 @@
   border: 6px solid purple;
   padding-inline: 0px;
   background: #ebc3db;
+  font-family: 'Barbaro';
 }
 
 .Logo {
@@ -47,12 +48,14 @@
 .Welcome .MuiTextField-root {
   width: min(380px, 92vw);
   margin-top: 14px;
+  font-family: 'Barbaro';
 }
 
 .WelcomeBox {
   color: white;
   text-shadow: #9f8fbd 4px 4px 4px;
   font-size: 2.5rem;
+  font-family: 'Barbaro';
 }
 
 .mapframe {
@@ -80,6 +83,7 @@
   background: #9F84BD;
   color: #ffffff;
   font-weight: 600;
+  font-family: 'Barbaro';
 }
 
 .MoodBlockBody {
@@ -121,6 +125,7 @@
   outline: 2px solid #111827;
   backdrop-filter: blur(4px);
   transition: transform 250ms ease;
+  font-family: 'Barbaro';
 }
 
 .MoodBlock > div:hover {
@@ -172,6 +177,7 @@
   letter-spacing: 0.2px;
   display: inline-block;
   transition: transform 0.3s ease;
+  font-family: 'Barbaro';
 }
 
 .homePage {
@@ -236,6 +242,7 @@
 
 .missionheader {
   justify-content: left;
+  font-family: 'Barbaro';
   display: flex;
   color: black;
   font-size: 64px;
