@@ -95,45 +95,48 @@ export default function MoodHeatmap() {
         source: "moods",
         maxzoom: 17,
         paint: {
-          // Weight = decayed moodScore
-          "heatmap-weight": ["get", "moodScore"],
+          "heatmap-weight": [
+  "interpolate", ["linear"], ["get", "moodScore"],
+  0, 0,
+  1, 0.5,
+  3, 1,
+  5, 2
+],
 
-          // Stronger heat at deeper zoom
-          "heatmap-intensity": [
-            "interpolate", ["linear"], ["zoom"],
-            13, 0.6,
-            15, 1.2,
-            17, 2.5,
-          ],
+"heatmap-intensity": [
+  "interpolate", ["linear"], ["zoom"],
+  13, 1.0,
+  15, 2.0,
+  17, 3.5
+],
 
-          // WEATHER‑STYLE COLOR BLENDING
-          "heatmap-color": [
-            "interpolate",
-            ["linear"],
-            ["heatmap-density"],
+"heatmap-color": [
+  "interpolate",
+  ["linear"],
+  ["heatmap-density"],
 
-            0.00, "rgba(0,0,0,0)",
-            0.10, "rgba(120, 90, 150, 0.3)", // purple haze
-            0.25, "rgba(180, 120, 200, 0.6)", // lavender
-            0.45, "rgba(255, 140, 160, 0.75)", // pink-orange
-            0.70, "rgba(255, 180, 80, 0.9)",  // warm orange
-            1.00, "rgba(255, 220, 0, 1)"      // bright yellow hotspot
-          ],
+  0.00, "rgba(0,0,0,0)",
+  0.05, "rgba(90, 60, 140, 0.35)",   // faint purple
+  0.15, "rgba(150, 100, 200, 0.55)", // lavender
+  0.30, "rgba(255, 120, 140, 0.7)",  // warm pink
+  0.50, "rgba(255, 165, 80, 0.85)",  // orange
+  0.75, "rgba(255, 200, 40, 0.95)",  // warm yellow
+  1.00, "rgba(255, 235, 0, 1.0)"     // bright radar yellow
+],
 
-          // Soft edges for weather-like visuals
-          "heatmap-radius": [
-            "interpolate", ["linear"], ["zoom"],
-            13, 30,
-            15, 45,
-            17, 70
-          ],
+"heatmap-radius": [
+  "interpolate", ["linear"], ["zoom"],
+  13, 25,
+  15, 40,
+  17, 70
+],
 
-          "heatmap-opacity": [
-            "interpolate", ["linear"], ["zoom"],
-            15, 0.9,
-            17, 0
-          ],
-        },
+"heatmap-opacity": [
+  "interpolate", ["linear"], ["zoom"],
+  13, 0.9,
+  17, 0.2
+]
+        }
       });
 
       // =================================================================================
