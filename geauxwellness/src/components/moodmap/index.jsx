@@ -26,7 +26,6 @@ export default function MoodHeatmap() {
   const [loading, setLoading] = useState(true);
   const [selectedEntry, setSelectedEntry] = useState(null);
 
-  // 1. Fetch moods from Firestore
   useEffect(() => {
     fetchMoods();
   }, [filter]);
@@ -54,7 +53,6 @@ export default function MoodHeatmap() {
     }
   };
 
-  // 2. Initialize map once
   useEffect(() => {
     if (map.current) return;
 
@@ -68,33 +66,28 @@ export default function MoodHeatmap() {
     map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
 
     map.current.on("load", () => {
-      // Add empty source — we'll fill it when moods load
       map.current.addSource("moods", {
         type: "geojson",
         data: { type: "FeatureCollection", features: [] },
       });
 
-      // Heatmap layer — color goes from purple (low) → blush → yellow (high)
       map.current.addLayer({
         id: "mood-heatmap",
         type: "heatmap",
         source: "moods",
         maxzoom: 17,
         paint: {
-          // Weight by moodScore (1–5)
           "heatmap-weight": [
             "interpolate", ["linear"],
             ["get", "moodScore"],
             1, 0.2,
             5, 1,
           ],
-          // Intensity increases with zoom
           "heatmap-intensity": [
             "interpolate", ["linear"], ["zoom"],
             14, 0.8,
             17, 2,
           ],
-          // Color ramp: transparent → purple → blush → warm yellow
           "heatmap-color": [
             "interpolate", ["linear"], ["heatmap-density"],
             0,    "rgba(0,0,0,0)",
@@ -104,13 +97,11 @@ export default function MoodHeatmap() {
             0.8,  "#f7c59f",
             1,    "#FFD700",
           ],
-          // Radius grows with zoom
           "heatmap-radius": [
             "interpolate", ["linear"], ["zoom"],
             14, 25,
             17, 50,
           ],
-          // Fade heatmap as you zoom in to reveal dots
           "heatmap-opacity": [
             "interpolate", ["linear"], ["zoom"],
             15, 0.9,
@@ -119,7 +110,6 @@ export default function MoodHeatmap() {
         },
       });
 
-      // Circle dots layer — visible when zoomed in close
       map.current.addLayer({
         id: "mood-circles",
         type: "circle",
@@ -131,7 +121,6 @@ export default function MoodHeatmap() {
             15, 4,
             17, 14,
           ],
-          // Color each dot by mood
           "circle-color": [
             "match", ["get", "mood"],
             "happy",   "#FFD700",
@@ -152,7 +141,6 @@ export default function MoodHeatmap() {
         },
       });
 
-      // Click on a dot to see journal entry
       map.current.on("click", "mood-circles", (e) => {
         const props = e.features[0].properties;
         setSelectedEntry(props);
@@ -176,7 +164,6 @@ export default function MoodHeatmap() {
     });
   }, []);
 
-  // 3. Update map source whenever moods data changes
   useEffect(() => {
     if (!map.current || !map.current.getSource("moods")) return;
 
