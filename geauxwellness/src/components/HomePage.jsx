@@ -32,6 +32,13 @@ export default function HomePage() {
         <QuizCard />
       </div>
 
+      <div className="contentRow">
+      <div className="missionstatement">
+        <h2 className="missionheader">Our Mission</h2>
+        <p className="missionbody">At GeauxWellness, our mission is to empower individuals to take control of their health and well-being through innovative technology and personalized insights. We are dedicated to providing a comprehensive platform that helps users track their wellness journey, gain valuable insights, and make informed decisions for a healthier lifestyle.</p>
+      </div>
+      </div>
+
       <footer className="footer">   
         <div className="footerContent">
           <h1>GeauxWellness</h1>
