@@ -8,6 +8,7 @@ import {
   addDoc,
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import { gap } from "@mui/system";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -31,7 +32,6 @@ export default function Profile() {
       if (userSnap.exists()) {
         setProfile(userSnap.data());
       }
-
       // Get journal entries
       const entrySnap = await getDocs(
         collection(db, "users", currentUser.uid, "journalEntries")
@@ -84,24 +84,17 @@ export default function Profile() {
 
   return (
     <div style={styles.container}>
-      <h1>Profile</h1>
+      <h1 style={{ fontFamily: "Barbaro", color: "White", textShadow: "2px 2px 4px black" }}>Profile</h1>
 
-      {/* USER INFO */}
-      <div style={styles.card}>
-        <h2>{profile.firstName} {profile.lastName}</h2>
-        <p>{profile.email}</p>
+     
+      
+
+<div style={{ display: "flex", flexDirection: "column", gap: "20px", padding: "20px" }}>
+  <div style={styles.card}>
+     {/* USER INFO */}
+        <h2>{profile.firstName ? profile.firstName : "First Name"} {profile.lastName ? profile.lastName : "Last Name"}</h2>
+        <p>{profile.email ? profile.email : "Email"}</p>
       </div>
-
-      {/* ADD JOURNAL */}
-      <div style={styles.card}>
-        <h3>Add Journal Entry</h3>
-        <textarea
-          value={newEntry}
-          onChange={(e) => setNewEntry(e.target.value)}
-        />
-        <button onClick={addEntry}>Save Entry</button>
-      </div>
-
       {/* JOURNAL HISTORY */}
       <div style={styles.card}>
         <h3>Previous Entries</h3>
@@ -110,16 +103,6 @@ export default function Profile() {
         ))}
       </div>
 
-      {/* ADD MOOD */}
-      <div style={styles.card}>
-        <h3>Record Mood</h3>
-        <input
-          value={newMood}
-          onChange={(e) => setNewMood(e.target.value)}
-          placeholder="Happy, Sad, etc."
-        />
-        <button onClick={addMood}>Save Mood</button>
-      </div>
 
       {/* MOOD HISTORY */}
       <div style={styles.card}>
@@ -128,19 +111,31 @@ export default function Profile() {
           <p key={m.id}>{m.mood}</p>
         ))}
       </div>
+      </div>
     </div>
   );
 }
 
 const styles = {
   container: {
-    maxWidth: "600px",
-    margin: "auto",
+    width: "550px",
+    height: "500px",
+    margin: "20px, 20px, 20px, 20px",
+    color: "black",
+    justifyContent: "center",
+    backgroundColor: "#E8D9F1",
+    padding: "20px, 20px, 20px, 20px",
+    borderRadius: "8px",
+    border: "3px solid black",
   },
   card: {
-    border: "1px solid #ddd",
-    padding: "15px",
-    margin: "10px 0",
+    border: "3px solid black",
+    color: "black",
+    margin: "20px, 20px, 20px, 20px",
+    position: "left",
+    padding: "20px, 20px, 20px, 20px",
+
     borderRadius: "8px",
+    backgroundColor: "#F5F5F5",
   },
 };
