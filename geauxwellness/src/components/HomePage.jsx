@@ -1,6 +1,7 @@
 import { TextField } from '@mui/material'
 import MoodBlockBody from './MoodBlock'
 import QuizCard from './QuizCard'
+import MoodHeatmap from './moodmap'
 
 export default function HomePage() {
   return (
@@ -16,14 +17,10 @@ export default function HomePage() {
             fullWidth
             label="Search"
           />
-          <button style={{ backgroundColor: '#9F84BD', color: '#ffffff' }}>Enter your location</button>
+          <button style={{ backgroundColor: '#9F84BD', color: '#ffffff' }}>Check Location</button>
         </div>
         <div className="map">
-          <iframe className="mapframe"
-            title="GeauxWellness Map"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.086441644419!2d-122.4194150846818!3d37.77492977975995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085809c5b5b5b5%3A0x123456789abcdef0!2sGeauxWellness%20HQ!5e0!3m2!1sen!2sus!4v1710000000000"
-            
-          ></iframe>
+            <MoodHeatmap />
           </div>
       </div>
 
