@@ -98,7 +98,7 @@ export default function Quiz() {
                     className={`mood-btn ${mood?.label === m.label ? "selected" : ""}`}
                     onClick={() => handleMoodSelect(m)}
                   >
-                    <img src={m.image} alt={m.label} style={{ width: 50, height: 50, objectFit: "contain" }} />
+                    <img src={m.image} alt={m.label} style={{ width: 60, height: 60, objectFit: "contain" }} />
                     <span className="mood-label">{m.label}</span>
                   </button>
                 ))}
@@ -114,7 +114,7 @@ export default function Quiz() {
 
               {mood && (
                 <div className="selected-mood-chip">
-                  <img src={mood.image} alt={mood.label} style={{ width: 40, height: 40, objectFit: "contain" }} />
+                  <img src={mood.image} alt={mood.label} style={{ width: 60, height: 60, objectFit: "contain" }} />
                   {mood.label}
                 </div>
               )}
