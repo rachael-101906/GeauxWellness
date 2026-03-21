@@ -1,3 +1,4 @@
+
 import logo from '../assets/GeauxWellness.png'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/authContext'
