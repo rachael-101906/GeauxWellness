@@ -1,5 +1,6 @@
 import './App.css'
 import { Navigate, Route, Routes } from 'react-router-dom'
+import Profile from './screens/Profile'
 import Navbar from './components/Navbar'
 import HomePage from './components/HomePage'
 import Login from './auth/login'
@@ -9,18 +10,15 @@ import Insights from './NavBar/insights'
 import Logout from './auth/logout'
 import { useAuth } from './context/authContext'
 
-function Profile() {
-  return (
-    <section className="Welcome">
-      <h2>Profile</h2>
-      <p>Your profile page is ready for customization.</p>
-    </section>
-  )
-}
-
 function App() {
   const { user } = useAuth()
 
+  
+ /*  function Profile() {
+    return (
+    <Profile />
+    )
+  } */ 
   return (
     <div className="appContainer">
       <Navbar />

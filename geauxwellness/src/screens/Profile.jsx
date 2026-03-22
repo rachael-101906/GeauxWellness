@@ -8,6 +8,7 @@ import {
   addDoc,
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import tigerstadium from "/public/tigerstadium.jpg";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -31,7 +32,6 @@ export default function Profile() {
       if (userSnap.exists()) {
         setProfile(userSnap.data());
       }
-
       // Get journal entries
       const entrySnap = await getDocs(
         collection(db, "users", currentUser.uid, "journalEntries")
@@ -83,25 +83,16 @@ export default function Profile() {
   if (!user) return <p>Loading...</p>;
 
   return (
-    <div style={styles.container}>
-      <h1>Profile</h1>
+    <div style={styles.pageStyle}>
+      <div style={styles.contentStyle}>
+        <h1 style={{ fontFamily: "Barbaro", color: "White", textShadow: "2px 2px 4px black" }}>Profile</h1>
 
-      {/* USER INFO */}
-      <div style={styles.card}>
-        <h2>{profile.firstName} {profile.lastName}</h2>
-        <p>{profile.email}</p>
-      </div>
-
-      {/* ADD JOURNAL */}
-      <div style={styles.card}>
-        <h3>Add Journal Entry</h3>
-        <textarea
-          value={newEntry}
-          onChange={(e) => setNewEntry(e.target.value)}
-        />
-        <button onClick={addEntry}>Save Entry</button>
-      </div>
-
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px", width: "100%" }}>
+          <div style={styles.card}>
+            {/* USER INFO */}
+            <h2>{profile.firstName ? profile.firstName : "First Name"} {profile.lastName ? profile.lastName : "Last Name"}</h2>
+            <p>{profile.email ? profile.email : "Email"}</p>
+          </div>
       {/* JOURNAL HISTORY */}
       <div style={styles.card}>
         <h3>Previous Entries</h3>
@@ -110,16 +101,6 @@ export default function Profile() {
         ))}
       </div>
 
-      {/* ADD MOOD */}
-      <div style={styles.card}>
-        <h3>Record Mood</h3>
-        <input
-          value={newMood}
-          onChange={(e) => setNewMood(e.target.value)}
-          placeholder="Happy, Sad, etc."
-        />
-        <button onClick={addMood}>Save Mood</button>
-      </div>
 
       {/* MOOD HISTORY */}
       <div style={styles.card}>
@@ -129,18 +110,63 @@ export default function Profile() {
         ))}
       </div>
     </div>
+  </div>
+<footer className="footer">
+  <div className="footerContent">
+    <h1>GeauxWellness</h1>
+    <p>© 2026 GeauxWellness. All rights reserved.</p>
+  </div>
+</footer> 
+</div>
   );
 }
 
 const styles = {
-  container: {
-    maxWidth: "600px",
-    margin: "auto",
+  pageStyle: {
+    minHeight: "100vh",
+    width: "100%",
+    backgroundImage: `url(${tigerstadium})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    paddingTop: "80px",
+    paddingLeft: "60px",
+    boxSizing: "border-box",
+    paddingBottom: "80px",
+  },
+  contentStyle: {
+    width: "min(450px, 95%)",
+    minHeight: "400px",
+    margin: "right:55px",
+    marginBottom: "20px",
+    backgroundColor: "#9F84BD",
+    borderRadius: "30px",
+    padding: "0px 20px 20px 20px",
+    boxSizing: "border-box",
+    border: "3px solid black",
+    boxShadow: "0 8px 20px rgba(0,0,0,0.2)",
   },
   card: {
-    border: "1px solid #ddd",
-    padding: "15px",
-    margin: "10px 0",
+    border: "3px solid black",
+    color: "black",
+    margin: "20px 0px",
+    padding: "10px",
+    marginBottom: "10px",
     borderRadius: "8px",
+    backgroundColor: "#F5F5F5",
   },
-};
+  footer: {
+    background: "#9F84BD",
+    color: "white",
+    textAlign: "center",
+    width: "100%",
+    marginBottom: "0",
+  },
+  footerContent: {
+    background: "#9F84BD",
+
+  },
+}

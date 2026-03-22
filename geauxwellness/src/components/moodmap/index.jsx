@@ -55,6 +55,7 @@ export default function MoodHeatmap() {
       map.current.addSource("moods", {
         type: "geojson",
         data: { type: "FeatureCollection", features: [] },
+        coordinates: [m.location.longitude, m.location.latitude],
       });
 
       map.current.addLayer({
