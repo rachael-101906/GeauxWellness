@@ -8,7 +8,7 @@ const MAPBOX_TOKEN =
   import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
 const LSU_CENTER = [-91.1801, 30.4133];
-const HALF_LIFE_HOURS = 8;
+const HALF_LIFE_HOURS = 10; 
 
 const MOOD_COLORS = {
   happy:   "#FCE365",
@@ -31,8 +31,6 @@ export default function MoodHeatmap() {
   const [filter, setFilter] = useState("all");
   const mapLoaded = useRef(false);
   const pendingFeatures = useRef(null);
-  
-
   const { moods, loading } = useAllMoods(filter);
 
   // Initialize map
