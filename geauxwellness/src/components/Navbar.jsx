@@ -16,13 +16,13 @@ export default function Navbar() {
       </Link>
       <div className="navigation">
 
-        <Link to="/tracker" className="navbarText">
-          Tracker
-        </Link>
+        <a href="/#quizSection" className="navbarText">
+          Quiz
+        </a>
         <Link to="/insights" className="navbarText">
           Insights
         </Link>
-        <Link to="/Profile" className="navbarText">
+        <Link to="/profile" className="navbarText">
           Profile
         </Link>
         {!loading && isAuthenticated ? (

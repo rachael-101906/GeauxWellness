@@ -134,13 +134,25 @@ export default function Profile() {
 
 const styles = {
   container: {
-    maxWidth: "600px",
-    margin: "auto",
+    width: "300px",
+    margin: "0 auto",
+    padding: "20px",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "20px",
+    justifyContent: "center",
   },
   card: {
     border: "1px solid #ddd",
     padding: "15px",
     margin: "10px 0",
     borderRadius: "8px",
+    width: "100%",
+    maxWidth: "600px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
   },
 };

@@ -1,8 +1,7 @@
-export default function Tracker() {
+export default function Quiz () {
 	return (
 		<section className="Welcome">
-			<h2>Tracker</h2>
-			<p>Track daily moods, habits, and wellness progress here.</p>
+			<a href="#quizSection">Quiz</a>
 		</section>
 	)
 }
