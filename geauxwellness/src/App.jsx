@@ -1,16 +1,22 @@
 import './App.css'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import Profile from './screens/Profile'
+import Profile from './NavBar/Profile'
 import Navbar from './components/Navbar'
 import HomePage from './components/HomePage'
 import Login from './auth/login'
 import Register from './auth/register'
-import Insights from './NavBar/insights'
+import Tracker from './NavBar/tracker'
+import Insights from './NavBar/insights/insights'
 import Logout from './auth/logout'
 import { useAuth } from './context/authContext'
 
 function App() {
-  const { user } = useAuth()
+  const { user, loading } = useAuth()
+
+  if (loading) {
+    return <div className="appContainer">Loading...</div>
+  }
+
   return (
     <div className="appContainer">
       <Navbar />

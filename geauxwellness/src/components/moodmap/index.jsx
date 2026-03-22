@@ -11,12 +11,12 @@ const LSU_CENTER = [-91.1801, 30.4133];
 const HALF_LIFE_HOURS = 10; 
 
 const MOOD_COLORS = {
-  happy:   "#FCE365",
-  anxious: "#4D4C4C",
-  sad:     "#041375",
-  angry:   "#520202",
-  hungry:  "#FF7C02",
-  flirty:  "#BD0243",
+  happy:   "#FFD700",
+  anxious: "#875ecec0",
+  sad:     "#4169E1",
+  angry:   "#FF4500",
+  hungry:  "#32CD32",
+  flirty:  "#FF69B4",
 };
 
 const getMoodEmoji = (mood) => ({
@@ -99,7 +99,7 @@ export default function MoodHeatmap() {
           "circle-color": [
             "match", ["get", "mood"],
             "happy",   "#FFD700",
-            "anxious", "#FF8C00",
+            "anxious", "#875ecec0",
             "sad",     "#4169E1",
             "angry",   "#FF4500",
             "hungry",  "#32CD32",
