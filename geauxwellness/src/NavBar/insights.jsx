@@ -1,28 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../../services/firebase";
-import {
-  collection,
-  getDocs
-} from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
+import { useAuth } from "../context/authContext";
 
 export default function Insights() {
+  const { user } = useAuth();
+  const userId = user?.uid;
+
   const [userStats, setUserStats] = useState({});
   const [communityStats, setCommunityStats] = useState({});
   const [loading, setLoading] = useState(true);
-
-  // Pull userId from local storage (must match what you write into Firestore)
-  const userId = localStorage.getItem("moodmapUser");
 
   const card = {
     background: "#fff",
     padding: "16px",
     borderRadius: "12px",
     marginBottom: "16px",
-    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.08)"
+    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.08)",
   };
 
   useEffect(() => {
-    const loadInsights = async () => {
+    async function loadInsights() {
       if (!userId) {
         setLoading(false);
         return;
@@ -33,51 +31,54 @@ export default function Insights() {
       const now = Date.now();
       const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
 
-      const moodsRef = collection(db, "moods");
-      const snapshot = await getDocs(moodsRef);
+      const snap = await getDocs(collection(db, "moods"));
 
-      let allEntries = [];
-      let userEntries = [];
+      let all = [];
+      let mine = [];
 
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        const time = data.createdAt?.toMillis?.() || 0;
+      snap.forEach((doc) => {
+        const d = doc.data();
 
-        // Only include past 7 days
-        if (time >= weekAgo) {
-          allEntries.push(data);
+        // ⭐ FIX 1: Unified timestamp reading
+        let timestamp = null;
+        if (d.createdAt?.toMillis) timestamp = d.createdAt.toMillis();
+        else if (d.createdAt?._seconds) timestamp = d.createdAt._seconds * 1000;
 
-          // User-specific entries
-          if (data.userId === userId) {
-            userEntries.push(data);
+        if (!timestamp) return; // skip if timestamp is invalid
+
+        // ⭐ FIX 2: Last 7 days filter
+        if (timestamp >= weekAgo) {
+          all.push(d);
+          if (d.userId === userId) {
+            mine.push(d);
           }
         }
       });
 
-      /* ---- PERSONAL WEEKLY MOOD COUNTS ---- */
-      const userMoodCounts = {};
-      userEntries.forEach((entry) => {
-        userMoodCounts[entry.mood] = (userMoodCounts[entry.mood] || 0) + 1;
+      // ⭐ Personal mood stats
+      const userCounts = {};
+      mine.forEach((e) => {
+        userCounts[e.mood] = (userCounts[e.mood] || 0) + 1;
       });
 
-      /* ---- COMMUNITY MOOD PERCENTAGES ---- */
+      // ⭐ Campus mood stats
       const communityCounts = {};
-      allEntries.forEach((entry) => {
-        communityCounts[entry.mood] = (communityCounts[entry.mood] || 0) + 1;
+      all.forEach((e) => {
+        communityCounts[e.mood] = (communityCounts[e.mood] || 0) + 1;
       });
 
-      const totalCommunity = allEntries.length;
+      const total = all.length;
       const communityPerc = {};
       Object.keys(communityCounts).forEach((mood) => {
-        communityPerc[mood] = totalCommunity
-          ? ((communityCounts[mood] / totalCommunity) * 100).toFixed(1)
+        communityPerc[mood] = total
+          ? ((communityCounts[mood] / total) * 100).toFixed(1)
           : "0.0";
       });
 
-      setUserStats(userMoodCounts);
+      setUserStats(userCounts);
       setCommunityStats(communityPerc);
       setLoading(false);
-    };
+    }
 
     loadInsights();
   }, [userId]);
@@ -95,15 +96,15 @@ export default function Insights() {
     <section className="Welcome">
       <h2>Insights</h2>
 
-      <div style={{ padding: 16, border: "1px solid #ddd", borderRadius: 8, marginBottom: 12 }}>
+      <div style={card}>
         <h3>Your Weekly Mood Summary</h3>
-
         {Object.keys(userStats).length === 0 ? (
           <p>You haven’t logged any moods this week.</p>
         ) : (
           Object.entries(userStats).map(([mood, count]) => (
             <p key={mood}>
-              You were <strong>{mood}</strong> {count} time{count > 1 ? "s" : ""} this week.
+              You were <strong>{mood}</strong> {count} time
+              {count > 1 ? "s" : ""} this week.
             </p>
           ))
         )}
@@ -111,7 +112,6 @@ export default function Insights() {
 
       <div style={card}>
         <h3>Campus Mood Trends</h3>
-
         {Object.keys(communityStats).length === 0 ? (
           <p>No campus mood data yet for this week.</p>
         ) : (
