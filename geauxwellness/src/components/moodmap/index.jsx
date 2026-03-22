@@ -30,6 +30,7 @@ export default function MoodHeatmap() {
   const [moods, setMoods] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Hello
   const HALF_LIFE_HOURS = 8;
 
   // =====================================================================================
@@ -84,6 +85,7 @@ export default function MoodHeatmap() {
       map.current.addSource("moods", {
         type: "geojson",
         data: { type: "FeatureCollection", features: [] },
+        coordinates: [m.location.longitude, m.location.latitude],
       });
 
       // =================================================================================
@@ -95,45 +97,48 @@ export default function MoodHeatmap() {
         source: "moods",
         maxzoom: 17,
         paint: {
-          // Weight = decayed moodScore
-          "heatmap-weight": ["get", "moodScore"],
+          "heatmap-weight": [
+  "interpolate", ["linear"], ["get", "moodScore"],
+  0, 0,
+  1, 0.5,
+  3, 1,
+  5, 2
+],
 
-          // Stronger heat at deeper zoom
-          "heatmap-intensity": [
-            "interpolate", ["linear"], ["zoom"],
-            13, 0.6,
-            15, 1.2,
-            17, 2.5,
-          ],
+"heatmap-intensity": [
+  "interpolate", ["linear"], ["zoom"],
+  13, 1.0,
+  15, 2.0,
+  17, 3.5
+],
 
-          // WEATHER‑STYLE COLOR BLENDING
-          "heatmap-color": [
-            "interpolate",
-            ["linear"],
-            ["heatmap-density"],
+"heatmap-color": [
+  "interpolate",
+  ["linear"],
+  ["heatmap-density"],
 
-            0.00, "rgba(0,0,0,0)",
-            0.10, "rgba(120, 90, 150, 0.3)", // purple haze
-            0.25, "rgba(180, 120, 200, 0.6)", // lavender
-            0.45, "rgba(255, 140, 160, 0.75)", // pink-orange
-            0.70, "rgba(255, 180, 80, 0.9)",  // warm orange
-            1.00, "rgba(255, 220, 0, 1)"      // bright yellow hotspot
-          ],
+  0.00, "rgba(0,0,0,0)",
+  0.05, "rgba(90, 60, 140, 0.35)",   // faint purple
+  0.15, "rgba(150, 100, 200, 0.55)", // lavender
+  0.30, "rgba(255, 120, 140, 0.7)",  // warm pink
+  0.50, "rgba(255, 165, 80, 0.85)",  // orange
+  0.75, "rgba(255, 200, 40, 0.95)",  // warm yellow
+  1.00, "rgba(255, 235, 0, 1.0)"     // bright radar yellow
+],
 
-          // Soft edges for weather-like visuals
-          "heatmap-radius": [
-            "interpolate", ["linear"], ["zoom"],
-            13, 30,
-            15, 45,
-            17, 70
-          ],
+"heatmap-radius": [
+  "interpolate", ["linear"], ["zoom"],
+  13, 25,
+  15, 40,
+  17, 70
+],
 
-          "heatmap-opacity": [
-            "interpolate", ["linear"], ["zoom"],
-            15, 0.9,
-            17, 0
-          ],
-        },
+"heatmap-opacity": [
+  "interpolate", ["linear"], ["zoom"],
+  13, 0.9,
+  17, 0.2
+]
+        }
       });
 
       // =================================================================================
@@ -158,7 +163,7 @@ export default function MoodHeatmap() {
             "angry", "#FF4500",
             "hungry", "#32CD32",
             "flirty", "#FF69B4",
-            "#9f84bd"
+            "#040404"
           ],
           "circle-opacity": [
             "interpolate", ["linear"], ["zoom"],
@@ -166,7 +171,7 @@ export default function MoodHeatmap() {
             16, 0.9
           ],
           "circle-stroke-width": 1.5,
-          "circle-stroke-color": "rgba(255,255,255,0.3)"
+          "circle-stroke-color": "rgba(5, 4, 4, 0.3)"
         }
       });
     });
@@ -175,19 +180,23 @@ export default function MoodHeatmap() {
   // =====================================================================================
   // 3. UPDATE MAP DATA WITH TIME DECAY APPLIED
   // =====================================================================================
-  useEffect(() => {
-    if (!map.current || !map.current.getSource("moods")) return;
+useEffect(() => {
+  if (!map.current || !map.current.getSource("moods")) return;
 
-    const now = Date.now();
+  const now = Date.now();
+  const HALF_LIFE_HOURS = 8;
 
-    const features = moods.map((m) => {
-      const ageMs = now - (m.createdAt?.toMillis?.() || now);
-      const ageHours = ageMs / (1000 * 60 * 60);
+  const features = moods
+    .filter((m) => m.location)
+    .map((m) => {
+      const t = m.createdAt?.toMillis?.() || now;
+      const ageHours = (now - t) / (1000 * 60 * 60);
 
+      const base = Number(m.moodScore) || 3;
       const decay = Math.exp(-ageHours / HALF_LIFE_HOURS);
-      const baseScore = Number(m.moodScore) || 3;
 
-      const decayedScore = baseScore * decay;
+      // Boost for visibility
+      const decayedScore = Math.max(0.2, base * decay * 1.5);
 
       return {
         type: "Feature",
@@ -197,19 +206,18 @@ export default function MoodHeatmap() {
         },
         properties: {
           mood: m.mood,
-          moodScore: decayedScore,
           journal: m.journal,
           userId: m.userId,
+          moodScore: Number(decayedScore.toFixed(3)),
         },
       };
     });
 
-    map.current.getSource("moods").setData({
-      type: "FeatureCollection",
-      features,
-    });
-  }, [moods]);
-
+  map.current.getSource("moods").setData({
+    type: "FeatureCollection",
+    features,
+  });
+}, [moods]);
   // =====================================================================================
   // EMOJI HELPER
   // =====================================================================================
@@ -231,51 +239,55 @@ export default function MoodHeatmap() {
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif" }}>
       
-      {/* FILTER BAR */}
-      <div style={{
-        display: "flex",
-        gap: 8,
-        flexWrap: "wrap",
-        marginBottom: 16,
-        padding: "0 4px",
-      }}>
-        <button
-          onClick={() => setFilter("all")}
-          style={{
-            padding: "7px 16px",
-            borderRadius: 20,
-            border: "1.5px solid",
-            borderColor: filter === "all" ? "#9f84bd" : "rgba(159,132,189,0.25)",
-            background: filter === "all" ? "rgba(159,132,189,0.2)" : "transparent",
-            color: filter === "all" ? "#ede3e9" : "#b8a8c8",
-            cursor: "pointer",
-            fontSize: 13,
-            fontWeight: 500,
-          }}
-        >
-          All moods
-        </button>
+{/* FILTER BAR */}
+<div style={{ color: "black" }}>
+  <div
+    style={{
+      display: "flex",
+      gap: 8,
+      flexWrap: "wrap",
+      marginBottom: 16,
+      padding: "0 4px",
+    }}
+  >
+    {Object.entries(MOOD_COLORS).map(([mood, color]) => (
+      <button
+        key={mood}
+        onClick={() => setFilter(mood)}
+        style={{
+          padding: "8px 16px",
+          borderRadius: 20,
+          border: "1.5px solid",
+          borderColor: filter === mood ? color : "rgba(0,0,0,0.15)",
 
-        {Object.entries(MOOD_COLORS).map(([mood, color]) => (
-          <button
-            key={mood}
-            onClick={() => setFilter(mood)}
-            style={{
-              padding: "7px 16px",
-              borderRadius: 20,
-              border: "1.5px solid",
-              borderColor: filter === mood ? color : "rgba(255,255,255,0.1)",
-              background: filter === mood ? `${color}22` : "transparent",
-              color: filter === mood ? color : "#b8a8c8",
-              cursor: "pointer",
-              fontSize: 13,
-              fontWeight: 500,
-            }}
-          >
-            {getMoodEmoji(mood)} {mood.charAt(0).toUpperCase() + mood.slice(1)}
-          </button>
-        ))}
-      </div>
+          // Background = mood color when active, white when inactive
+          background: filter === mood ? color : "rgba(255,255,255,0.9)",
+
+          // ⭐ FORCE BLACK TEXT
+          color: "#000000 !important",
+
+          cursor: "pointer",
+          fontSize: 13,
+          fontWeight: 600,
+          transition: "0.25s ease-in-out",
+        }}
+
+        onMouseEnter={(e) => {
+          e.target.style.background = color;
+          e.target.style.color = "#000000";
+        }}
+
+        onMouseLeave={(e) => {
+          e.target.style.background =
+            filter === mood ? color : "rgba(255,255,255,0.6)";
+          e.target.style.color = "#000000";
+        }}
+      >
+        {getMoodEmoji(mood)} {mood.charAt(0).toUpperCase() + mood.slice(1)}
+      </button>
+    ))}
+  </div>
+</div>
 
       {/* MAP */}
       <div style={{ position: "relative" }}>
@@ -286,7 +298,7 @@ export default function MoodHeatmap() {
             height: 520,
             borderRadius: 20,
             overflow: "hidden",
-            border: "1px solid rgba(159,132,189,0.2)",
+            border: "1px solid rgba(48, 45, 53, 0.84)",
           }}
         />
 
@@ -296,7 +308,7 @@ export default function MoodHeatmap() {
             display: "flex", alignItems: "center", justifyContent: "center",
             background: "rgba(42,31,53,0.7)",
             borderRadius: 20,
-            color: "#ede3e9",
+            color: "#000000",
             fontSize: 14,
           }}>
             Loading mood data...
