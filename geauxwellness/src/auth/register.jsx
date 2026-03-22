@@ -50,7 +50,7 @@ export default function Register() {
     <div className="background" > 
     <section className="loginSection">
     <form onSubmit={handleSubmit} className="loginCard">
-      <h2>Register</h2>
+      <h2 style={{ color: "black" }}>Register</h2>
       <label htmlFor="firstName">First Name</label>
       <input
         id="firstName"
