@@ -17,7 +17,7 @@ export default function HomePage() {
         </div>
       </div>
       <MoodBlockBody />
-      <div className="quizMissionRow">
+      <div id="quizSection" className="quizMissionRow">
         <div className="quizSection"><QuizCard /></div>
       </div>
       <footer className="footer">
