@@ -252,39 +252,38 @@ useEffect(() => {
   >
     {Object.entries(MOOD_COLORS).map(([mood, color]) => (
       <button
-        key={mood}
-        onClick={() => setFilter(mood)}
-        style={{
-          padding: "8px 16px",
-          borderRadius: 20,
-          border: "1.5px solid",
-          borderColor: filter === mood ? color : "rgba(0,0,0,0.15)",
+  key={mood}
+  className="mood-filter-btn"
+  onClick={() => setFilter(mood)}
+  style={{
+    padding: "7px 16px",
+    borderRadius: 20,
+    border: "1.5px solid",
+    borderColor: filter === mood ? color : "rgba(0,0,0,0.15)",
 
-          // Background = mood color when active, white when inactive
-          background: filter === mood ? color : "rgba(255,255,255,0.9)",
+    background: filter === mood ? color : "#ffffff",
 
-          // ⭐ FORCE BLACK TEXT
-          color: "#000000 !important",
+    color: "#000000",
+ 
+    cursor: "pointer",
+    fontSize: 13,
+    fontWeight: 600,
+    transition: "0.25s ease-in-out",
+  }}
 
-          cursor: "pointer",
-          fontSize: 13,
-          fontWeight: 600,
-          transition: "0.25s ease-in-out",
-        }}
+  onMouseEnter={(e) => {
+    e.target.style.background = color;
+    e.target.style.color = "#000000";
+  }}
 
-        onMouseEnter={(e) => {
-          e.target.style.background = color;
-          e.target.style.color = "#000000";
-        }}
-
-        onMouseLeave={(e) => {
-          e.target.style.background =
-            filter === mood ? color : "rgba(255,255,255,0.6)";
-          e.target.style.color = "#000000";
-        }}
-      >
-        {getMoodEmoji(mood)} {mood.charAt(0).toUpperCase() + mood.slice(1)}
-      </button>
+  onMouseLeave={(e) => {
+    e.target.style.background =
+      filter === mood ? color : "#ffffff";
+    e.target.style.color = "#000000";
+  }}
+>
+  {getMoodEmoji(mood)} {mood.charAt(0).toUpperCase() + mood.slice(1)}
+</button>
     ))}
   </div>
 </div>
