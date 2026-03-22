@@ -24,7 +24,7 @@ export default function MoodBlockBody() {
 
         <div className="Anxious">
           <h3>Anxious</h3>
-          <p>Feeling anxious. Take a deep breath and try again.</p>
+          <p>Feeling anxious. Take a moment to yourself and practice deep breathing.</p>
         </div>
 
         <div className="Sad">

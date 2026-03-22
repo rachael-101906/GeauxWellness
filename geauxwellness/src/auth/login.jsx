@@ -44,7 +44,7 @@ export default function Login() {
     <section className="loginSection">
      
       <form onSubmit={handleSubmit} className="loginCard">
-        <h2>Login</h2>
+        <h2 style={{ color: "black" }}>Login</h2>
 
         <label htmlFor="email">Email</label>
         <input

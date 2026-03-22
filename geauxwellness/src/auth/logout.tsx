@@ -19,7 +19,7 @@ export default function Logout() {
     <div className="background" >
     <section className="loginSection">
       <div className="loginCard">
-          <h2>Logout</h2>
+          <h2 style={{ color: "black" }}>Logout</h2>
           <button type="submit" onClick={handleLogout} className="loginCard">
             Log Out
           </button>
