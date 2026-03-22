@@ -23,24 +23,35 @@ export function AuthProvider({ children }) {
 
     const userRef = doc(db, 'users', firebaseUser.uid)
     const snapshot = await getDoc(userRef)
+    const normalizedFirstName = firstName?.trim() || firebaseUser.displayName?.trim() || ''
 
     if (!snapshot.exists()) {
-      await setDoc(userRef, {
-        firstName: firstName || firebaseUser.displayName || '',
-        lastName: '',
+      const profileData = {
         email: firebaseUser.email || '',
         memberSince: serverTimestamp(),
-      })
+      }
+
+      if (normalizedFirstName) {
+        profileData.firstName = normalizedFirstName
+      }
+
+      await setDoc(userRef, profileData, { merge: true })
       return
     }
 
-    // Keep key profile fields in sync without overwriting existing user data.
+    const existingFirstName = snapshot.data()?.firstName?.trim?.() || ''
+
+    const profileData = {
+      email: firebaseUser.email || snapshot.data()?.email || '',
+    }
+
+    if (existingFirstName || normalizedFirstName) {
+      profileData.firstName = existingFirstName || normalizedFirstName
+    }
+
     await setDoc(
       userRef,
-      {
-        email: firebaseUser.email || snapshot.data()?.email || '',
-        firstName: snapshot.data()?.firstName || firstName || firebaseUser.displayName || '',
-      },
+      profileData,
       { merge: true },
     )
   }

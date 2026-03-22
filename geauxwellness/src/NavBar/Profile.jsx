@@ -19,7 +19,7 @@ export default function Profile() {
   const { profile, loading: profileLoading } = useProfile(user);
   const { moods, loading: moodsLoading } = useMoods(user?.uid);
 
-  const displayName = (profile?.firstName || user?.firstName || "Rachael").trim();
+  const displayName = (profile?.firstName || user?.displayName || "Friend").trim();
   const displayEmail = profile?.email || user?.email || "Email";
   const displayMemberSince = formatDate(profile?.createdAt || profile?.memberSince, true);
   const previousMoods = moods.filter((m) => m.mood && m.mood !== "journal");
