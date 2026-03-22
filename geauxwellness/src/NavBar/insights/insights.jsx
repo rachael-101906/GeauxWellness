@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { db } from "../../services/firebase";
+import { db } from "../../../services/firebase";
 import { collection, getDocs } from "firebase/firestore";
-import { useAuth } from "../context/authContext";
-import ChartComponent from "../NavBar/chart";
+import { useAuth } from "../../context/authContext";
+import ChartComponent from "./chart";
 
 export default function Insights() {
   const { user } = useAuth();
@@ -40,7 +40,6 @@ export default function Insights() {
       snap.forEach((doc) => {
         const d = doc.data();
 
-        // FIX: Timestamp normalization
         let timestamp = null;
         if (d.createdAt?.toMillis) {
           timestamp = d.createdAt.toMillis();
@@ -56,13 +55,11 @@ export default function Insights() {
         }
       });
 
-      // PERSONAL MOODS
       const userCounts = {};
       mine.forEach((e) => {
         userCounts[e.mood] = (userCounts[e.mood] || 0) + 1;
       });
 
-      // CAMPUS MOODS
       const communityCounts = {};
       all.forEach((e) => {
         communityCounts[e.mood] = (communityCounts[e.mood] || 0) + 1;
@@ -102,11 +99,11 @@ export default function Insights() {
   }
 
   return (
-    <section className="Welcome">
+    <section className="insights">
       <h2>Insights</h2>
 
       {/* WEEKLY MOOD SUMMARY */}
-      <div style={card}>
+      <div style={{ ...card, display: "flex", flex: 1, flexDirection: "column" }}>
         <h3>Your Weekly Mood Summary</h3>
 
         {Object.keys(userStats).length === 0 ? (
@@ -122,7 +119,7 @@ export default function Insights() {
       </div>
 
       {/* CAMPUS MOOD TRENDS */}
-      <div style={card}>
+      <div style={{ ...card, display: "flex", flexDirection: "column" }}>
         <h3>Campus Mood Trends</h3>
 
         {Object.keys(communityStats).length === 0 ? (

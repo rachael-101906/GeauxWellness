@@ -31,14 +31,18 @@ ChartJS.register(
  *  - colors?: string[]
  */
 export default function ChartComponent({ type, title, labels, data, colors }) {
-  const defaultColors = [
-    "#FCE365", // happy
-    "#4D4C4C", // anxious
-    "#041375", // sad
-    "#520202", // angry
-    "#FF7C02", // hungry
-    "#BD0243", // flirty
-  ];
+  const MOOD_COLORS = {
+    happy: "#FFD700",
+    anxious: "#875ecec0",
+    sad: "#4169E1",
+    angry: "#FF4500",
+    hungry: "#32CD32",
+    flirty: "#FF69B4",
+  };
+
+  const defaultColors = labels.map(
+    (label) => MOOD_COLORS[label.toLowerCase()] || "#9f84bd"
+  );
 
   const chartData = {
     labels,
