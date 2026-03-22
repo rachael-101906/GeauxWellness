@@ -8,7 +8,7 @@ import {
   addDoc,
 } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-import { gap } from "@mui/system";
+import tigerstadium from "/public/tigerstadium.jpg";
 
 export default function Profile() {
   const [user, setUser] = useState(null);
@@ -83,18 +83,16 @@ export default function Profile() {
   if (!user) return <p>Loading...</p>;
 
   return (
-    <div style={styles.container}>
-      <h1 style={{ fontFamily: "Barbaro", color: "White", textShadow: "2px 2px 4px black" }}>Profile</h1>
+    <div style={styles.pageStyle}>
+      <div style={styles.contentStyle}>
+        <h1 style={{ fontFamily: "Barbaro", color: "White", textShadow: "2px 2px 4px black" }}>Profile</h1>
 
-     
-      
-
-<div style={{ display: "flex", flexDirection: "column", gap: "20px", padding: "20px" }}>
-  <div style={styles.card}>
-     {/* USER INFO */}
-        <h2>{profile.firstName ? profile.firstName : "First Name"} {profile.lastName ? profile.lastName : "Last Name"}</h2>
-        <p>{profile.email ? profile.email : "Email"}</p>
-      </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px", width: "100%" }}>
+          <div style={styles.card}>
+            {/* USER INFO */}
+            <h2>{profile.firstName ? profile.firstName : "First Name"} {profile.lastName ? profile.lastName : "Last Name"}</h2>
+            <p>{profile.email ? profile.email : "Email"}</p>
+          </div>
       {/* JOURNAL HISTORY */}
       <div style={styles.card}>
         <h3>Previous Entries</h3>
@@ -111,31 +109,64 @@ export default function Profile() {
           <p key={m.id}>{m.mood}</p>
         ))}
       </div>
-      </div>
     </div>
+  </div>
+<footer className="footer">
+  <div className="footerContent">
+    <h1>GeauxWellness</h1>
+    <p>© 2026 GeauxWellness. All rights reserved.</p>
+  </div>
+</footer> 
+</div>
   );
 }
 
 const styles = {
-  container: {
-    width: "550px",
-    height: "500px",
-    margin: "20px, 20px, 20px, 20px",
-    color: "black",
-    justifyContent: "center",
-    backgroundColor: "#E8D9F1",
-    padding: "20px, 20px, 20px, 20px",
-    borderRadius: "8px",
+  pageStyle: {
+    minHeight: "100vh",
+    width: "100%",
+    backgroundImage: `url(${tigerstadium})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    paddingTop: "80px",
+    paddingLeft: "60px",
+    boxSizing: "border-box",
+    paddingBottom: "80px",
+  },
+  contentStyle: {
+    width: "min(450px, 95%)",
+    minHeight: "400px",
+    margin: "right:55px",
+    marginBottom: "20px",
+    backgroundColor: "#9F84BD",
+    borderRadius: "30px",
+    padding: "0px 20px 20px 20px",
+    boxSizing: "border-box",
     border: "3px solid black",
+    boxShadow: "0 8px 20px rgba(0,0,0,0.2)",
   },
   card: {
     border: "3px solid black",
     color: "black",
-    margin: "20px, 20px, 20px, 20px",
-    position: "left",
-    padding: "20px, 20px, 20px, 20px",
-
+    margin: "20px 0px",
+    padding: "10px",
+    marginBottom: "10px",
     borderRadius: "8px",
     backgroundColor: "#F5F5F5",
   },
-};
+  footer: {
+    background: "#9F84BD",
+    color: "white",
+    textAlign: "center",
+    width: "100%",
+    marginBottom: "0",
+  },
+  footerContent: {
+    background: "#9F84BD",
+
+  },
+}
