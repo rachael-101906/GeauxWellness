@@ -1,4 +1,5 @@
-### GeauxWellness - WiCS Hackathon 2026
+# GeauxWellness - WiCS Hackathon 2026
+### Created by import hackathon.teamName
 
 ## Inspiration
 
