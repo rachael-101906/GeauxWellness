@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { db } from "../../services/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { useAuth } from "../context/authContext";
+import ChartComponent from "../NavBar/chart";
 
 export default function Insights() {
   const { user } = useAuth();
   const userId = user?.uid;
-
+  const [error, setError] = useState(null);
   const [userStats, setUserStats] = useState({});
   const [communityStats, setCommunityStats] = useState({});
   const [loading, setLoading] = useState(true);
@@ -39,29 +40,29 @@ export default function Insights() {
       snap.forEach((doc) => {
         const d = doc.data();
 
-        // ⭐ FIX 1: Unified timestamp reading
+        // FIX: Timestamp normalization
         let timestamp = null;
-        if (d.createdAt?.toMillis) timestamp = d.createdAt.toMillis();
-        else if (d.createdAt?._seconds) timestamp = d.createdAt._seconds * 1000;
+        if (d.createdAt?.toMillis) {
+          timestamp = d.createdAt.toMillis();
+        } else if (d.createdAt?._seconds) {
+          timestamp = d.createdAt._seconds * 1000;
+        } else {
+          return;
+        }
 
-        if (!timestamp) return; // skip if timestamp is invalid
-
-        // ⭐ FIX 2: Last 7 days filter
         if (timestamp >= weekAgo) {
           all.push(d);
-          if (d.userId === userId) {
-            mine.push(d);
-          }
+          if (d.userId === userId) mine.push(d);
         }
       });
 
-      // ⭐ Personal mood stats
+      // PERSONAL MOODS
       const userCounts = {};
       mine.forEach((e) => {
         userCounts[e.mood] = (userCounts[e.mood] || 0) + 1;
       });
 
-      // ⭐ Campus mood stats
+      // CAMPUS MOODS
       const communityCounts = {};
       all.forEach((e) => {
         communityCounts[e.mood] = (communityCounts[e.mood] || 0) + 1;
@@ -91,35 +92,48 @@ export default function Insights() {
       </section>
     );
   }
+  if (error) {
+    return (
+      <section className="Welcome">
+        <h2>Insights</h2>
+        <p style={{ color: "red" }}>Error loading insights: {error}</p>
+      </section>
+    );
+  }
 
   return (
     <section className="Welcome">
       <h2>Insights</h2>
 
+      {/* WEEKLY MOOD SUMMARY */}
       <div style={card}>
         <h3>Your Weekly Mood Summary</h3>
+
         {Object.keys(userStats).length === 0 ? (
           <p>You haven’t logged any moods this week.</p>
         ) : (
-          Object.entries(userStats).map(([mood, count]) => (
-            <p key={mood}>
-              You were <strong>{mood}</strong> {count} time
-              {count > 1 ? "s" : ""} this week.
-            </p>
-          ))
+          <ChartComponent
+            type="bar"
+            title="Your Moods This Week"
+            labels={Object.keys(userStats)}
+            data={Object.values(userStats)}
+          />
         )}
       </div>
 
+      {/* CAMPUS MOOD TRENDS */}
       <div style={card}>
         <h3>Campus Mood Trends</h3>
+
         {Object.keys(communityStats).length === 0 ? (
-          <p>No campus mood data yet for this week.</p>
+          <p>No campus mood data yet.</p>
         ) : (
-          Object.entries(communityStats).map(([mood, percent]) => (
-            <p key={mood}>
-              <strong>{mood}</strong>: {percent}%
-            </p>
-          ))
+          <ChartComponent
+            type="pie"
+            title="Campus Mood Distribution"
+            labels={Object.keys(communityStats)}
+            data={Object.values(communityStats)}
+          />
         )}
       </div>
     </section>
