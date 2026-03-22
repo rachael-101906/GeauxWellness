@@ -6,6 +6,7 @@ import { useAuth } from '../context/authContext'
 export default function Register() {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
+  const [firstName, setFirstName] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
@@ -35,7 +36,7 @@ export default function Register() {
     setSuccessMessage('')
 
     try {
-      await register(email.trim(), password, confirmPassword)
+      await register(firstName.trim(), email.trim(), password, confirmPassword)
       setSuccessMessage('Registration successful. Redirecting to home...')
       console.log('Registration successful')
       navigate('/', { replace: true })
@@ -50,7 +51,15 @@ export default function Register() {
     <section className="loginSection">
     <form onSubmit={handleSubmit} className="loginCard">
       <h2>Register</h2>
-
+      <label htmlFor="firstName">First Name</label>
+      <input
+        id="firstName"
+        type="text"
+        value={firstName}
+        onChange={(event) => setFirstName(event.target.value)}
+        placeholder="John"
+        required
+      />
       <label htmlFor="email">Email</label>
       <input
         id="email"
@@ -60,7 +69,6 @@ export default function Register() {
         placeholder="you@example.com"
         required
       />
-
       <label htmlFor="password">Password</label>
       <input
         id="password"

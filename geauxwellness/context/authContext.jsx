@@ -6,8 +6,9 @@ import {
   signOut,
 } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
-
-import { auth } from "../services/firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "../services/firebase";
+import { serverTimestamp } from "firebase/firestore";
 
 const AuthContext = createContext(undefined);
 
@@ -23,11 +24,17 @@ export const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  const register = async (email, password, confirmPassword) => {
+  const register = async (firstName, email, password, confirmPassword) => {
     if (password !== confirmPassword) {
       throw new Error("Passwords do not match. Please try again.");
     }
-    return createUserWithEmailAndPassword(auth, email, password);
+    const { user } = await createUserWithEmailAndPassword(auth, email, password);
+    await setDoc(doc(db, "users", user.uid), {
+      firstName,
+      email,
+      createdAt: serverTimestamp(),
+    });
+    return user;
   };
 
   const login = (email, password) => {
