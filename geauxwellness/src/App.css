@@ -31,12 +31,16 @@
 
 /* Welcome section */
 .Welcome {
+  flex: 1 1 820px;
+  max-width: 620px;
   text-align: center;
   padding: 20px 20px;
   border-radius: 30px;
+  align-items: center;
+  justify-content: center;
   margin-top: 20px;
   min-height: 500px;
-  width: min(500px, 100%);
+  width: 100%;
   margin-left: 0;
   border: 6px solid purple;
   padding-inline: 0px;
@@ -49,8 +53,8 @@
   justify-content: center;
   align-items: center;
   margin-top: 20px;
-  flex: 1 1 895px;
-  width: min(895px, 100%);
+  flex: 1 1 720px;
+  width: 100%;
   max-width: 100%;
 }
 
@@ -89,7 +93,7 @@
 
 .mapframe {
   width: 100%;
-  max-width: 895px;
+  max-width: 995px;
   height: 540px;
   border-color: purple;
   border-width: 6px;
@@ -210,11 +214,28 @@
 .homePage {
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-between;
+  align-items: stretch;
   flex-wrap: wrap;
-  gap: 24px;
-  padding: 20px;
+  gap: 32px;
+  padding: 20px 40px;
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1100px) {
+  .homePage {
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .Welcome,
+  .map {
+    flex: 1 1 100%;
+    max-width: 900px;
+  }
 }
 
 
@@ -398,6 +419,99 @@
 
 .moodCard:hover {
   transform: translateY(-4px) scale(1.03);
+}
+
+.profilePage {
+  min-height: 100vh;
+  width: 100%;
+  background-image: url('/tigerstadium.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.profileMainContent {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 80px;
+  padding-left: 60px;
+  padding-right: 20px;
+  padding-bottom: 20px;
+  box-sizing: border-box;
+  justify-content: center;
+}
+
+.profileContent {
+  width: min(980px, 95%);
+  min-height: 400px;
+  margin: 0;
+  margin-bottom: 20px;
+  background-color: #9f84bd;
+  border-radius: 30px;
+  padding: 0 24px 24px 24px;
+  box-sizing: border-box;
+  border: 3px solid black;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.profileTitle {
+  font-family: 'Barbaro';
+  color: white;
+  text-shadow: 2px 2px 4px black;
+}
+
+.profileSections {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.profileCard {
+  border: 3px solid black;
+  color: black;
+  margin: 20px 0;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+}
+
+.profileHistoryRow {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.profileHistoryCard {
+  flex: 1 1 360px;
+  min-width: 280px;
+  border: 3px solid black;
+  color: black;
+  margin: 0;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #f5f5f5;
+}
+
+.profileFooter {
+  background: #9f84bd;
+  color: white;
+  text-align: center;
+  width: 100%;
+  margin-top: auto;
+  padding: 12px 0;
+}
+
+.profileFooterContent {
+  background: #9f84bd;
 }
 
 .moodCard h3 {

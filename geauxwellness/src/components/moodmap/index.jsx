@@ -4,15 +4,14 @@ import { useAllMoods } from "../../../services/useMoods";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 const MAPBOX_TOKEN =
-  import.meta.env.VITE_MAPBOX_TOKEN ||
-  import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
+  import.meta.env.VITE_MAPBOX_TOKEN;
 
-const LSU_CENTER = [-91.1801, 30.4133];
+const LSU_CENTER = [-91.1801, 30.4233];
 const HALF_LIFE_HOURS = 10; 
 
 const MOOD_COLORS = {
   happy:   "#FFD700",
-  anxious: "#875ecec0",
+  anxious: "#875ECE",
   sad:     "#4169E1",
   angry:   "#FF4500",
   hungry:  "#32CD32",
@@ -31,9 +30,34 @@ export default function MoodHeatmap() {
   const [filter, setFilter] = useState("all");
   const mapLoaded = useRef(false);
   const pendingFeatures = useRef(null);
+  const hasCenteredOnData = useRef(false);
   const { moods, loading } = useAllMoods(filter);
 
-  // Initialize map
+  const centerMapOnFeatures = (features) => {
+    if (!map.current || !features.length) return;
+
+    if (features.length === 1) {
+      map.current.flyTo({
+        center: features[0].geometry.coordinates,
+        zoom: 15.4,
+        duration: 700,
+      });
+      return;
+    }
+
+    const bounds = new mapboxgl.LngLatBounds();
+    features.forEach((feature) => {
+      bounds.extend(feature.geometry.coordinates);
+    });
+
+    map.current.fitBounds(bounds, {
+      padding: 70,
+      maxZoom: 15.4,
+      duration: 700,
+    });
+  };
+
+
   useEffect(() => {
     if (!MAPBOX_TOKEN) return;
     if (map.current) return;
@@ -44,7 +68,7 @@ export default function MoodHeatmap() {
       container: mapContainer.current,
       style: "mapbox://styles/mapbox/dark-v11",
       center: LSU_CENTER,
-      zoom: 15,
+      zoom: 20,
     });
 
     map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
@@ -59,12 +83,14 @@ export default function MoodHeatmap() {
         id: "mood-heatmap",
         type: "heatmap",
         source: "moods",
-        maxzoom: 17,
+        maxzoom: 15.5,
         paint: {
           "heatmap-weight": ["get", "moodScore"],
           "heatmap-intensity": [
             "interpolate", ["linear"], ["zoom"],
-            13, 0.6, 15, 1.2, 17, 2.5,
+            13, 0.55,
+            14, 0.95,
+            16, 1.3,
           ],
           "heatmap-color": [
             "interpolate", ["linear"], ["heatmap-density"],
@@ -77,11 +103,19 @@ export default function MoodHeatmap() {
           ],
           "heatmap-radius": [
             "interpolate", ["linear"], ["zoom"],
-            13, 30, 15, 45, 17, 70,
+            12, 32,
+            14, 46,
+            16, 60,
           ],
           "heatmap-opacity": [
             "interpolate", ["linear"], ["zoom"],
-            15, 0.9, 17, 0,
+            10.5, 0.95,
+            12, 0.84,
+            13.2, 0.65,
+            14.1, 0.5,
+            14.8, 0.32,
+            15.2, 0.16,
+            15.5, 0,
           ],
         },
       });
@@ -90,16 +124,19 @@ export default function MoodHeatmap() {
         id: "mood-circles",
         type: "circle",
         source: "moods",
-        minzoom: 15,
         paint: {
           "circle-radius": [
             "interpolate", ["linear"], ["zoom"],
-            15, 4, 17, 14,
+            10, 4,
+            12, 6,
+            14, 9,
+            16, 13,
+            18, 16,
           ],
           "circle-color": [
             "match", ["get", "mood"],
             "happy",   "#FFD700",
-            "anxious", "#875ecec0",
+            "anxious", "#875ECE",
             "sad",     "#4169E1",
             "angry",   "#FF4500",
             "hungry",  "#32CD32",
@@ -108,10 +145,27 @@ export default function MoodHeatmap() {
           ],
           "circle-opacity": [
             "interpolate", ["linear"], ["zoom"],
-            15, 0, 16, 0.9,
+            8, 0.14,
+            10, 0.24,
+            12, 0.38,
+            13.2, 0.54,
+            14.1, 0.7,
+            15, 0.87,
+            16, 0.98,
           ],
-          "circle-stroke-width": 1.5,
-          "circle-stroke-color": "rgba(255,255,255,0.3)",
+          "circle-stroke-width": [
+            "interpolate", ["linear"], ["zoom"],
+            10, 0.8,
+            13, 1.4,
+            16, 2.2,
+          ],
+          "circle-stroke-opacity": [
+            "interpolate", ["linear"], ["zoom"],
+            10, 0.45,
+            13, 0.62,
+            16, 0.8,
+          ],
+          "circle-stroke-color": "rgba(255,255,255,0.8)",
         },
       });
 
@@ -142,10 +196,20 @@ export default function MoodHeatmap() {
           type: "FeatureCollection",
           features: pendingFeatures.current,
         });
+
+        if (pendingFeatures.current.length) {
+          centerMapOnFeatures(pendingFeatures.current);
+          hasCenteredOnData.current = true;
+        }
+
         pendingFeatures.current = null;
       }
     });
   }, []);
+
+  useEffect(() => {
+    hasCenteredOnData.current = false;
+  }, [filter]);
 
   useEffect(() => {
     const now = Date.now();
@@ -179,26 +243,12 @@ export default function MoodHeatmap() {
       type: "FeatureCollection",
       features,
     });
-  }, [moods]);
 
-  if (!MAPBOX_TOKEN) {
-    return (
-      <div style={{
-        fontFamily: "Barbaros",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        height: 300, background: "#342544", borderRadius: 20,
-        color: "#ede3e9", fontSize: 14, padding: 24, textAlign: "center",
-        border: "1px solid rgba(159,132,189,0.2)",
-        flexDirection: "column", gap: 8,
-      }}>
-        <span style={{ fontSize: 32 }}>🗺️</span>
-        <strong>Map unavailable</strong>
-        <p style={{ color: "#b8a8c8", margin: 0 }}>
-          Add VITE_MAPBOX_TOKEN to your .env file and restart the dev server.
-        </p>
-      </div>
-    );
-  }
+    if (!hasCenteredOnData.current && features.length) {
+      centerMapOnFeatures(features);
+      hasCenteredOnData.current = true;
+    }
+  }, [moods]);
 
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif" }}>
@@ -210,7 +260,7 @@ export default function MoodHeatmap() {
             padding: "7px 16px", borderRadius: 20, border: "1.5px solid",
             borderColor: filter === "all" ? "#9f84bd" : "rgba(159,132,189,0.25)",
             background: filter === "all" ? "rgba(159,132,189,0.2)" : "transparent",
-            color: filter === "all" ? "#ede3e9" : "#b8a8c8",
+            color: filter === "all" ? "#000000" : "#b8a8c8",
             cursor: "pointer", fontSize: 13, fontWeight: 500,
           }}
         >
