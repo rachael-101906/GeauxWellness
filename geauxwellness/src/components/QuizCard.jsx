@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { addDoc, collection, serverTimestamp, GeoPoint } from "firebase/firestore";
-import { db } from "../../services/firebase";
+import { addMood } from "../../services/useMoods";
 import { useAuth } from "../context/authContext";
 import { images } from "../constants/images";
 
@@ -45,25 +44,23 @@ export default function Quiz() {
   const handleLocationChoice = (choice) => {
     if (choice === "yes" && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (pos) => saveResponse({ mood, journal, location: { lat: pos.coords.latitude, lng: pos.coords.longitude } }),
-        () => saveResponse({ mood, journal, location: null })
+        (pos) => saveResponse({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+        () => saveResponse(null)
       );
     } else {
-      saveResponse({ mood, journal, location: null });
+      saveResponse(null);
     }
     setStep(3);
   };
 
-  const saveResponse = async (data) => {
+  const saveResponse = async ( location ) => {
     try {
-      await addDoc(collection(db, "moods"), {
-        userId: user?.uid ?? "anonymous",
-        mood: data.mood.label.toLowerCase(),
-        moodScore: data.mood.score,
-        journal: data.journal,
-        location: data.location ? new GeoPoint(data.location.lat, data.location.lng) : null,
-        createdAt: serverTimestamp(),
-      });
+      await addMood({ 
+        userId: user?.uid ?? "anonymous", 
+        mood: mood.label,
+        moodScore: mood.score, 
+        journal, 
+        location });
     } catch (error) {
       console.error("Error saving response:", error);
     }
