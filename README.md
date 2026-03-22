@@ -1,3 +1,5 @@
+### GeauxWellness - WiCS Hackathon 2026
+
 ## Inspiration
 
 A theme as encompassing as happiness was a difficult and broad area to start with for our WiCS hackathon project. However, we became inspired by the importance of mental health on LSU's campus and the hidden struggles that many students face every day. Mental health outlets in Louisiana are few and far between, especially those specifically for college students and young adults. The intention of our application is to show students they are not alone in their feelings; everyone struggles, and often these struggles go unseen. However, through emotion tracking, journal entries, and an emotional heatmap, students can better understand themselves and the community around them.
