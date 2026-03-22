@@ -1,62 +1,86 @@
-import { addDoc, collection, onSnapshot, query, where } from "firebase/firestore";
+import { addDoc, collection, onSnapshot, query, where, serverTimestamp, GeoPoint } from "firebase/firestore";
 import { useEffect, useState } from "react";
-
 import { db } from "./firebase";
 
 export default function useMoods(userId) {
   const [moods, setMoods] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [resolvedUserId, setResolvedUserId] = useState(null);
 
   useEffect(() => {
     if (!userId) {
       return;
     }
 
-    const moodsCollection = collection(db, "moods");
+    const q = query(collection(db, "moods"), where("userId", "==", userId));
 
-    const unsubscribe = onSnapshot(
-      query(moodsCollection, where("userId", "==", userId)),
+    const unsubscribe = onSnapshot(q,
       (snapshot) => {
-        const moodsData = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setMoods(moodsData);
-        setError(null);
-        setResolvedUserId(userId);
+        const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setMoods(data);
+        console.log("Fetched moods:", data);
+        setLoading(false);
       },
       (err) => {
         console.error("Error fetching moods:", err);
         setError(err);
-        setResolvedUserId(userId);
+        setLoading(false);
       }
     );
 
     return () => unsubscribe();
   }, [userId]);
 
-
-  const loading = !!userId && resolvedUserId !== userId;
-
-  return {
-    moods: userId && resolvedUserId === userId ? moods : [],
-    loading,
-    error: userId ? error : null,
-  };
+  return { moods, loading, error };
 }
 
-export async function addMood({ moodData, userId }) {
-  const moods = collection(db, "moods");
+export function useAllMoods(filterMood = "all") {
+  const [moods, setMoods] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    let q;
+    if (filterMood === "all") {
+      q = query(collection(db, "moods"), where("location", "!=", null));
+    } else {
+      q = query(
+        collection(db, "moods"),
+        where("mood", "==", filterMood),
+        where("location", "!=", null)
+      );
+    }
+
+    const unsubscribe = onSnapshot(q,
+      (snapshot) => {
+        const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setMoods(data);
+        console.log("Fetched all moods:", data);
+        setLoading(false);
+      },
+      (err) => {
+        console.error("Error fetching all moods:", err);
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, [filterMood]);
+
+  return { moods, loading };
+}
+
+export async function addMood({ userId, mood, moodScore, journal, location }) {
   try {
-    const docRef = await addDoc(moods, {
+    const docRef = await addDoc(collection(db, "moods"), {
       userId,
-      ...moodData,
-      note: moodData.note || "",
-      createdAt: new Date().toISOString(),
+      mood: mood.toLowerCase(),
+      moodScore,
+      journal: journal || "",
+      location: location ? new GeoPoint(location.lat, location.lng) : null,
+      createdAt: serverTimestamp(),
     });
-
+    console.log("Mood added with ID:", docRef.id);
+    console.log("Mood details:", { userId, mood, moodScore, journal, location });
     return docRef.id;
   } catch (error) {
     console.error("Error adding mood:", error);

@@ -46,7 +46,7 @@ export default function Register() {
   }
 
   return (
-    <div className="background" >
+    <div className="background" > 
     <section className="loginSection">
     <form onSubmit={handleSubmit} className="loginCard">
       <h2>Register</h2>
