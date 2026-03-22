@@ -10,8 +10,7 @@ export default defineConfig(({ mode }) => {
     env.MAPBOX_ACCESS_TOKEN ||
     env.MAP_BOX_GL_ACCESS_TOKEN ||
     env.VITE_MAPBOX_TOKEN ||
-    env.VITE_MAPBOX_ACCESS_TOKEN ||
-    ''
+    env.VITE_MAPBOX_ACCESS_TOKEN
 
   return {
     plugins: [react()],
